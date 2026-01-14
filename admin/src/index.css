@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark background for admin panel */
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background-color: #080808;
+}
+
+#root {
+  height: 100%;
+  overflow: hidden;
+  background-color: #080808;
+}
+
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Hide scrollbars in modals and when body is locked */
+body.modal-open {
+  overflow: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body.modal-open::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari and Opera */
+}
+
+/* Fix select dropdown styling */
+select {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+select option {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 8px;
+}
+
+select:focus {
+  outline: none;
+  border-color: rgba(168, 85, 247, 0.5);
+}
