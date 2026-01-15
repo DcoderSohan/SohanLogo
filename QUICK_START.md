@@ -13,7 +13,7 @@
 
 1. Go to [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub**
 2. Select your repo
-3. **Settings** → **Root Directory**: `backend`
+3. **⚠️ CRITICAL**: Click service → **Settings** → **Root Directory**: Set to `backend` (this is required!)
 4. **Variables** → Add:
    ```
    MONGODB_URI=your_mongodb_connection_string
@@ -27,8 +27,8 @@
 ### 2. Deploy Frontend (1 min)
 
 1. Same project → **+ New** → **GitHub Repo** → Same repo
-2. **Settings** → **Root Directory**: `frontend`
-3. **Settings** → **Build Command**: `npm run build`
+2. **⚠️ CRITICAL**: Click service → **Settings** → **Root Directory**: Set to `frontend` (this is required!)
+3. Build and start commands are auto-detected from `nixpacks.toml`
 4. **Variables** → Add:
    ```
    VITE_API_URL=https://your-backend-url.up.railway.app/api
@@ -38,8 +38,8 @@
 ### 3. Deploy Admin (1 min)
 
 1. Same project → **+ New** → **GitHub Repo** → Same repo
-2. **Settings** → **Root Directory**: `admin`
-3. **Settings** → **Build Command**: `npm run build`
+2. **⚠️ CRITICAL**: Click service → **Settings** → **Root Directory**: Set to `admin` (this is required!)
+3. Build and start commands are auto-detected from `nixpacks.toml`
 4. **Variables** → Add:
    ```
    VITE_API_URL=https://your-backend-url.up.railway.app/api

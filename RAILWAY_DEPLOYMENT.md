@@ -15,10 +15,17 @@ This guide will help you deploy your portfolio website (Backend, Frontend, and A
 
 1. Make sure all your code is committed and pushed to GitHub
 2. Ensure you have the following files in your repository:
-   - `backend/railway.json`
-   - `frontend/railway.json`
-   - `admin/railway.json`
+   - `backend/nixpacks.toml` (Nixpacks build configuration)
+   - `frontend/nixpacks.toml` (Nixpacks build configuration)
+   - `admin/nixpacks.toml` (Nixpacks build configuration)
    - Updated `backend/server.js` with production CORS
+
+**⚠️ IMPORTANT**: When deploying each service in Railway, you MUST set the **Root Directory** in Settings:
+- Backend: `backend`
+- Frontend: `frontend`
+- Admin: `admin`
+
+Without setting the Root Directory, Railway will try to build from the repository root and fail!
 
 ### Step 2: Deploy Backend Service
 
@@ -26,11 +33,12 @@ This guide will help you deploy your portfolio website (Backend, Frontend, and A
 2. **Click "New Project"**
 3. **Select "Deploy from GitHub repo"**
 4. **Choose your repository**
-5. **Configure the service**:
-   - **Root Directory**: Set to `backend`
-   - **Build Command**: Leave empty (Railway will auto-detect)
-   - **Start Command**: `npm start`
-   - **Watch Paths**: `backend/**`
+5. **IMPORTANT - Configure the service**:
+   - Click on the service → **Settings** tab
+   - **Root Directory**: ⚠️ **CRITICAL** - Set to `backend` (this tells Railway where to find package.json)
+   - **Build Command**: Leave empty (Nixpacks will auto-detect from `backend/nixpacks.toml`)
+   - **Start Command**: `npm start` (or leave empty, it's in nixpacks.toml)
+   - **Watch Paths**: `backend/**` (optional, for auto-deploy on changes)
 
 6. **Add Environment Variables**:
    Click on your backend service → Variables tab → Add the following:
@@ -54,11 +62,12 @@ This guide will help you deploy your portfolio website (Backend, Frontend, and A
 
 1. **In the same Railway project**, click **"+ New"** → **"GitHub Repo"**
 2. **Select the same repository**
-3. **Configure the service**:
-   - **Root Directory**: Set to `frontend`
-   - **Build Command**: `npm run build`
-   - **Start Command**: `npm run preview -- --host 0.0.0.0 --port $PORT`
-   - **Watch Paths**: `frontend/**`
+3. **IMPORTANT - Configure the service**:
+   - Click on the service → **Settings** tab
+   - **Root Directory**: ⚠️ **CRITICAL** - Set to `frontend` (this tells Railway where to find package.json)
+   - **Build Command**: Leave empty (Nixpacks will auto-detect from `frontend/nixpacks.toml`)
+   - **Start Command**: Leave empty (it's in nixpacks.toml)
+   - **Watch Paths**: `frontend/**` (optional, for auto-deploy on changes)
 
 4. **Add Environment Variables**:
    ```
@@ -72,11 +81,12 @@ This guide will help you deploy your portfolio website (Backend, Frontend, and A
 
 1. **In the same Railway project**, click **"+ New"** → **"GitHub Repo"**
 2. **Select the same repository**
-3. **Configure the service**:
-   - **Root Directory**: Set to `admin`
-   - **Build Command**: `npm run build`
-   - **Start Command**: `npm run preview -- --host 0.0.0.0 --port $PORT`
-   - **Watch Paths**: `admin/**`
+3. **IMPORTANT - Configure the service**:
+   - Click on the service → **Settings** tab
+   - **Root Directory**: ⚠️ **CRITICAL** - Set to `admin` (this tells Railway where to find package.json)
+   - **Build Command**: Leave empty (Nixpacks will auto-detect from `admin/nixpacks.toml`)
+   - **Start Command**: Leave empty (it's in nixpacks.toml)
+   - **Watch Paths**: `admin/**` (optional, for auto-deploy on changes)
 
 4. **Add Environment Variables**:
    ```
