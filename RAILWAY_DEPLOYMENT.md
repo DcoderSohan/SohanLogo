@@ -192,13 +192,13 @@ NODE_ENV=production
 
 ### Frontend (`frontend/`)
 ```
-VITE_API_URL=https://backend-url.up.railway.app/api
+VITE_API_URL=https://sohanlogo.onrender.com/api
 ```
 **Note**: `PORT` is automatically set by Railway - no need to set it manually.
 
 ### Admin (`admin/`)
 ```
-VITE_API_URL=https://backend-url.up.railway.app/api
+VITE_API_URL=https://sohanlogo.onrender.com/api
 ```
 **Note**: `PORT` is automatically set by Railway - no need to set it manually.
 

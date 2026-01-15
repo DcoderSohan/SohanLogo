@@ -31,7 +31,7 @@
 3. Build and start commands are auto-detected from `nixpacks.toml`
 4. **Variables** → Add:
    ```
-   VITE_API_URL=https://your-backend-url.up.railway.app/api
+   VITE_API_URL=https://sohanlogo.onrender.com/api
    ```
 5. Copy frontend URL
 
@@ -42,7 +42,7 @@
 3. Build and start commands are auto-detected from `nixpacks.toml`
 4. **Variables** → Add:
    ```
-   VITE_API_URL=https://your-backend-url.up.railway.app/api
+   VITE_API_URL=https://sohanlogo.onrender.com/api
    ```
 5. Copy admin URL
 
