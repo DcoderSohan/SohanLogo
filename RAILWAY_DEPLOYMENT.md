@@ -72,8 +72,8 @@ Without setting the Root Directory, Railway will try to build from the repositor
 4. **Add Environment Variables**:
    ```
    VITE_API_URL=https://your-backend.up.railway.app/api
-   PORT=3000
    ```
+   **Note**: Railway automatically sets the `PORT` environment variable - you don't need to set it manually.
 
 5. **Get Frontend URL**: Copy the Railway-provided URL
 
@@ -91,8 +91,8 @@ Without setting the Root Directory, Railway will try to build from the repositor
 4. **Add Environment Variables**:
    ```
    VITE_API_URL=https://your-backend.up.railway.app/api
-   PORT=3001
    ```
+   **Note**: Railway automatically sets the `PORT` environment variable - you don't need to set it manually.
 
 5. **Get Admin URL**: Copy the Railway-provided URL
 
@@ -193,14 +193,14 @@ NODE_ENV=production
 ### Frontend (`frontend/`)
 ```
 VITE_API_URL=https://backend-url.up.railway.app/api
-PORT=3000
 ```
+**Note**: `PORT` is automatically set by Railway - no need to set it manually.
 
 ### Admin (`admin/`)
 ```
 VITE_API_URL=https://backend-url.up.railway.app/api
-PORT=3001
 ```
+**Note**: `PORT` is automatically set by Railway - no need to set it manually.
 
 ## 🎯 Quick Checklist
 
