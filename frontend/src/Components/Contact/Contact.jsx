@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback, memo } from "react";
 import { motion, useAnimation, useInView } from "framer-motion";
 import { Send, User, Mail, Phone, MessageSquare } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { contactAPI, contactPageAPI } from "../../utils/api";
 import SuccessModal from "./SuccessModal";
 
-const Contact = () => {
+const Contact = memo(() => {
   const location = useLocation();
   const isStandalonePage = location.pathname === "/contact";
   const [formData, setFormData] = useState({});
@@ -60,29 +60,32 @@ const Contact = () => {
   }, []);
 
   // Get map configuration from API or use defaults
-  const mapLocation = contactPageData?.settings?.mapLocation || {
+  const mapLocation = useMemo(() => contactPageData?.settings?.mapLocation || {
     latitude: 19.1896137,
     longitude: 73.0358554,
     zoom: 15,
-  };
+  }, [contactPageData?.settings?.mapLocation]);
   
   // Generate Google Maps embed URL
-  const mapEmbedUrl = `https://www.google.com/maps?q=${mapLocation.latitude},${mapLocation.longitude}&z=${mapLocation.zoom}&output=embed`;
+  const mapEmbedUrl = useMemo(() => 
+    `https://www.google.com/maps?q=${mapLocation.latitude},${mapLocation.longitude}&z=${mapLocation.zoom}&output=embed`,
+    [mapLocation]
+  );
 
   // Get form fields from API or use defaults, and sort by order
-  const formFields = (contactPageData?.formFields || [
+  const formFields = useMemo(() => (contactPageData?.formFields || [
     { name: "name", label: "Name", type: "text", placeholder: "Your Name", required: true, order: 1 },
     { name: "email", label: "Email", type: "email", placeholder: "your.email@example.com", required: true, order: 2 },
     { name: "mobile", label: "Mobile", type: "tel", placeholder: "+1234567890", required: true, order: 3 },
     { name: "message", label: "Message", type: "textarea", placeholder: "Your Message", required: true, order: 4 },
-  ]).sort((a, b) => (a.order || 0) - (b.order || 0));
+  ]).sort((a, b) => (a.order || 0) - (b.order || 0)), [contactPageData?.formFields]);
 
   // Get page settings from API or use defaults
-  const pageSettings = contactPageData?.settings || {
+  const pageSettings = useMemo(() => contactPageData?.settings || {
     title: "Get In Touch",
     subtitle: "Feel free to reach out to me",
     description: "",
-  };
+  }, [contactPageData?.settings]);
 
   // Check screen size - only mobile (below 640px) gets different layout
   useEffect(() => {
@@ -109,28 +112,28 @@ const Contact = () => {
     }
   }, [formInView, formControls]);
 
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
+  const handleInputChange = useCallback((e) => {
+    setFormData(prev => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
-  };
+    }));
+  }, []);
 
-  const validateEmail = (email) => {
+  const validateEmail = useCallback((email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
-  };
+  }, []);
 
-  const validateMobile = (mobile) => {
+  const validateMobile = useCallback((mobile) => {
     const mobileRegex = /^[\+]?[1-9][\d]{0,15}$/;
     return mobileRegex.test(mobile.replace(/\s/g, ""));
-  };
+  }, []);
 
-  const showNotification = (message, type = "success") => {
+  const showNotification = useCallback((message, type = "success") => {
     setNotification(message);
     setNotificationType(type);
     setTimeout(() => setNotification(""), 5000);
-  };
+  }, []);
 
   const handleSubmit = async () => {
     // Dynamic validation based on form fields
@@ -382,11 +385,11 @@ const Contact = () => {
 
         <div className="relative w-full max-w-7xl mx-auto px-4">
           {!isStandalonePage && (
-            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start py-8 sm:py-12">
+            <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start py-8 sm:py-12 contact-grid">
               {/* Left side - Title */}
               <motion.div
                 ref={titleRef}
-                className="text-center sm:text-left order-1 px-2 sm:px-4"
+                className="text-center sm:text-center md:text-center lg:text-left order-1 px-2 sm:px-4 md:px-6"
                 variants={containerVariants}
                 initial="hidden"
                 animate={titleControls}
@@ -397,7 +400,7 @@ const Contact = () => {
                     key={word}
                     custom={index}
                     variants={wordVariants}
-                    className={`
+                    className={`contact-title-text
                     text-4xl font-Tourney sm:text-6xl md:text-7xl lg:text-8xl 
                  text-white leading-tight
                     ${word === "Let's" ? "hover:text-purple-400" : ""}
@@ -413,7 +416,7 @@ const Contact = () => {
 
               {pageSettings.description && (
                 <motion.div
-                  className="mt-3 sm:mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-md mx-auto sm:mx-0"
+                  className="mt-3 sm:mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-md mx-auto sm:mx-auto md:mx-auto lg:mx-0"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.2, duration: 0.8 }}
@@ -456,7 +459,7 @@ const Contact = () => {
                 className="relative order-2 px-2 sm:px-4"
               >
               <motion.div
-                className="backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-gray-700/30 shadow-2xl bg-gray-900/20"
+                className="backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-gray-700/30 shadow-2xl bg-gray-900/20 contact-form-container"
                 whileHover={{
                   borderColor: "rgba(168, 85, 247, 0.3)",
                   transition: { duration: 0.3 },
@@ -517,7 +520,7 @@ const Contact = () => {
                             value={formData[field.name] || ""}
                             onChange={handleInputChange}
                             placeholder={field.placeholder || field.label}
-                            className={`
+                            className={`contact-input
                             w-full pl-8 sm:pl-10 pr-4 py-3 sm:py-3 
                             bg-gray-900/50 border border-gray-600/50 rounded-lg
                             text-white placeholder-gray-400 text-sm sm:text-base
@@ -549,7 +552,7 @@ const Contact = () => {
                           onChange={handleInputChange}
                           placeholder={field.placeholder || field.label}
                           rows={isMobile ? "3" : "4"}
-                          className="w-full pl-8 sm:pl-10 pr-4 py-3 sm:py-2 bg-gray-900/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-400/20 transition-all duration-300 backdrop-blur-sm resize-none text-sm sm:text-base"
+                          className="w-full pl-8 sm:pl-10 pr-4 py-3 sm:py-2 bg-gray-900/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-400/20 transition-all duration-300 backdrop-blur-sm resize-none text-sm sm:text-base contact-textarea"
                           required={field.required}
                         />
                       </motion.div>
@@ -606,12 +609,12 @@ const Contact = () => {
           {/* Standalone Contact Page Layout - Text and Form side by side, Map full width below */}
           {isStandalonePage && (
             <div className="pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12">
-              {/* Top Section: Title/Text and Form side by side */}
-              <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start mb-8 sm:mb-12">
+              {/* Top Section: Title/Text and Form side by side (desktop), stacked on mobile/tablet */}
+              <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start mb-8 sm:mb-12 contact-grid">
                 {/* Left side - Title/Text */}
                 <motion.div
                   ref={titleRef}
-                  className="text-center sm:text-left px-2 sm:px-4"
+                  className="text-center sm:text-center md:text-center lg:text-left px-2 sm:px-4 md:px-6"
                   variants={containerVariants}
                   initial="hidden"
                   animate={titleControls}
@@ -622,12 +625,12 @@ const Contact = () => {
                         key={word}
                         custom={index}
                         variants={wordVariants}
-                        className={`
-                        text-4xl font-Tourney sm:text-6xl md:text-7xl lg:text-8xl 
-                        text-gray-900 leading-tight
-                        ${word === "Let's" ? "hover:text-purple-600" : ""}
-                        ${word === "Work" ? "hover:text-blue-600" : ""}
-                        ${word === "Together" ? "hover:text-green-600" : ""}
+                    className={`contact-title-text
+                    text-4xl font-Tourney sm:text-6xl md:text-7xl lg:text-8xl 
+                        text-white leading-tight
+                        ${word === "Let's" ? "hover:text-purple-400" : ""}
+                        ${word === "Work" ? "hover:text-blue-400" : ""}
+                        ${word === "Together" ? "hover:text-green-400" : ""}
                         transition-colors duration-300 cursor-default
                       `}
                       >
@@ -638,7 +641,7 @@ const Contact = () => {
 
                   {pageSettings.description && (
                     <motion.div
-                      className="mt-3 sm:mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-md mx-auto sm:mx-0"
+                      className="mt-3 sm:mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-md mx-auto sm:mx-auto md:mx-auto lg:mx-0"
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.2, duration: 0.8 }}
@@ -649,7 +652,7 @@ const Contact = () => {
 
                   {/* Decorative elements */}
                   <motion.div
-                    className="mt-4 flex justify-center sm:justify-start"
+                    className="mt-4 flex justify-center sm:justify-center md:justify-center lg:justify-start"
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1.5, duration: 0.6 }}
@@ -681,7 +684,7 @@ const Contact = () => {
                   className="relative px-2 sm:px-4"
                 >
                 <motion.div
-                  className="backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-gray-700/30 shadow-2xl bg-gray-900/20"
+                  className="backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-gray-700/30 shadow-2xl bg-gray-900/20 contact-form-container"
                   whileHover={{
                     borderColor: "rgba(168, 85, 247, 0.3)",
                     transition: { duration: 0.3 },
@@ -742,7 +745,7 @@ const Contact = () => {
                               value={formData[field.name] || ""}
                               onChange={handleInputChange}
                               placeholder={field.placeholder || field.label}
-                              className={`
+                              className={`contact-input
                             w-full pl-8 sm:pl-10 pr-4 py-3 sm:py-3 
                             bg-gray-900/50 border border-gray-600/50 rounded-lg
                             text-white placeholder-gray-400 text-sm sm:text-base
@@ -774,7 +777,7 @@ const Contact = () => {
                             onChange={handleInputChange}
                             placeholder={field.placeholder || field.label}
                             rows={isMobile ? "3" : "4"}
-                            className="w-full pl-8 sm:pl-10 pr-4 py-3 sm:py-2 bg-gray-900/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-400/20 transition-all duration-300 backdrop-blur-sm resize-none text-sm sm:text-base"
+                            className="w-full pl-8 sm:pl-10 pr-4 py-3 sm:py-2 bg-gray-900/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-400/20 transition-all duration-300 backdrop-blur-sm resize-none text-sm sm:text-base contact-textarea"
                             required={field.required}
                           />
                         </motion.div>
@@ -858,8 +861,44 @@ const Contact = () => {
 
         </div>
       </div>
+      
+      {/* Tablet-specific styles */}
+      <style>{`
+        @media (min-width: 768px) and (max-width: 1023px) {
+          /* Fix text size for tablet */
+          .contact-title-text {
+            font-size: clamp(3rem, 8vw, 5rem) !important;
+          }
+          
+          /* Fix form container width and spacing */
+          .contact-form-container {
+            max-width: 100% !important;
+            padding: 1.5rem !important;
+          }
+          
+          /* Ensure proper grid alignment */
+          .contact-grid {
+            gap: 2rem !important;
+            align-items: center !important;
+          }
+          
+          /* Fix input field sizes */
+          .contact-input {
+            padding: 0.75rem 1rem !important;
+            font-size: 0.9rem !important;
+          }
+          
+          /* Fix textarea */
+          .contact-textarea {
+            min-height: 100px !important;
+            padding: 0.75rem 1rem !important;
+          }
+        }
+      `}</style>
     </div>
   );
-};
+});
+
+Contact.displayName = 'Contact';
 
 export default Contact;

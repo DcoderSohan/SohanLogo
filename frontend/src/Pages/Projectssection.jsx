@@ -138,12 +138,12 @@ const Projectssection = () => {
   return (
     <section
       ref={sectionRef}
-      className="min-h-screen py-32 md:py-24 px-4 bg-gradient-to-br from-gray-900 via-black to-gray-800"
+      className="min-h-screen py-32 md:py-40 lg:py-24 px-4 bg-gradient-to-br from-gray-900 via-black to-gray-800 projects-section"
     >
       <div className="max-w-6xl mx-auto lg:py-20">
         {/* Section Header */}
         <div
-          className={`text-center mb-12 transition-all duration-500 ${
+          className={`text-center mb-12 md:mb-16 transition-all duration-500 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
           }`}
         >
@@ -157,7 +157,7 @@ const Projectssection = () => {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-6 lg:gap-8">
           {validProjects.length === 0 ? (
             <div className="text-gray-400 text-center py-8 col-span-2">
               <p>No projects available.</p>
@@ -223,7 +223,11 @@ const ProjectCard = ({
         border border-white/20
         shadow-lg
         overflow-hidden
-        transition-transform duration-500"
+        transition-transform duration-500
+        h-full
+        flex
+        flex-col
+        project-card-tablet"
       >
         {/* Featured Badge */}
         {project.featured && (
@@ -234,40 +238,42 @@ const ProjectCard = ({
           </div>
         )}
         {/* Project Image */}
-        <div className="relative overflow-hidden p-3">
-          {hasValidImage && !imageError ? (
-            <>
-              {/* Loading placeholder */}
-              {!isImageLoaded && (
-                <div className="w-full h-40 md:h-48 bg-gray-700 animate-pulse flex items-center justify-center">
-                  <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                </div>
-              )}
-              <img
-                src={project.image}
-                alt={project.title}
-                className={`w-full h-48 object-cover transition-transform duration-700 ${
-                  isImageLoaded ? "opacity-100" : "opacity-0 absolute inset-0"
-                }`}
-                loading="lazy"
-                decoding="async"
-                onLoad={() => onImageLoad(project._id || project.id)}
-                onError={() => setImageError(true)}
-                fetchPriority="low"
-              />
-            </>
-          ) : (
-            // Fallback when image is invalid, blob URL, or fails to load
-            <div className="w-full h-40 md:h-48 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">
-                {project.title ? project.title.split(" ")[0] : "Project"}
-              </span>
-            </div>
-          )}
-        </div>
+        <Link to={`/project/${project._id || project.id}`} className="block">
+          <div className="relative overflow-hidden p-3 cursor-pointer">
+            {hasValidImage && !imageError ? (
+              <>
+                {/* Loading placeholder */}
+                {!isImageLoaded && (
+                  <div className="w-full h-40 md:h-44 lg:h-48 bg-gray-700 animate-pulse flex items-center justify-center">
+                    <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                )}
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className={`w-full h-40 md:h-44 lg:h-48 object-cover transition-transform duration-400 project-image-tablet ${
+                    isImageLoaded ? "opacity-100" : "opacity-0 absolute inset-0"
+                  }`}
+                  loading="lazy"
+                  decoding="async"
+                  onLoad={() => onImageLoad(project._id || project.id)}
+                  onError={() => setImageError(true)}
+                  fetchPriority="low"
+                />
+              </>
+            ) : (
+              // Fallback when image is invalid, blob URL, or fails to load
+              <div className="w-full h-40 md:h-44 lg:h-48 bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
+                <span className="text-white font-bold text-lg">
+                  {project.title ? project.title.split(" ")[0] : "Project"}
+                </span>
+              </div>
+            )}
+          </div>
+        </Link>
 
         {/* Card Content */}
-        <div className="p-4 md:p-6">
+        <div className="p-4 md:p-5 lg:p-6 flex-1 flex flex-col project-content-tablet">
           <Link to={`/project/${project._id || project.id}`}>
             <h3 className="text-lg md:text-xl font-bold text-white mb-3 group-hover:text-blue-400 transition-colors line-clamp-2 cursor-pointer">
               {project.title}
@@ -293,13 +299,14 @@ const ProjectCard = ({
             </div>
           )}
 
-          
-
           {/* Description and Button */}
-          <div className="flex items-start justify-between gap-4">
-            <p className="text-gray-300 text-sm leading-relaxed flex-1 line-clamp-3">
+          <div className="flex items-start justify-between gap-4 mt-auto">
+            <Link 
+              to={`/project/${project._id || project.id}`}
+              className="text-gray-300 text-sm leading-relaxed flex-1 line-clamp-2 hover:text-white transition-colors cursor-pointer"
+            >
               {project.description || "No description available."}
-            </p>
+            </Link>
             {project.liveUrl && (
               <button
                 className="flex-shrink-0 group/btn relative flex items-center justify-center w-12 h-12 bg-white rounded-full transition-all duration-200 hover:scale-110 active:scale-95"
@@ -319,7 +326,7 @@ const ProjectCard = ({
   );
 };
 
-// Add CSS for line clamping
+// Add CSS for line clamping and tablet-specific styles
 const styles = `
   .line-clamp-2 {
     display: -webkit-box;
@@ -333,6 +340,24 @@ const styles = `
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+  
+  /* Tablet-specific fixes for projects page */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .projects-section {
+      padding-top: 10rem !important;
+      padding-bottom: 3rem !important;
+    }
+    .project-card-tablet {
+      max-height: 480px !important;
+      min-height: 450px !important;
+    }
+    .project-image-tablet {
+      height: 180px !important;
+    }
+    .project-content-tablet {
+      padding: 1rem 1.25rem !important;
+    }
   }
 `;
 

@@ -24,8 +24,14 @@ const PORT = process.env.PORT || 5000;
 // Middleware - Enhanced CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174'];
+    // Get allowed origins from environment or use defaults
+    const allowedOriginsEnv = process.env.ALLOWED_ORIGINS;
+    const allowedOrigins = allowedOriginsEnv 
+      ? allowedOriginsEnv.split(',').map(url => url.trim())
+      : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174'];
+    
     // Allow requests with no origin (like mobile apps or curl requests)
+    // In production, you might want to be more strict
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {

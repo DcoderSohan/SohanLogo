@@ -320,7 +320,7 @@ const Dashboard = () => {
 
       {/* Main Content Area - Scrollable */}
       <main className="flex-1 overflow-y-auto overflow-x-hidden h-full lg:ml-0">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 pt-14 sm:pt-16 lg:pt-4 pb-4 sm:py-6 lg:py-8">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 pt-24 sm:pt-28 lg:pt-4 pb-4 sm:py-6 lg:py-8">
           <motion.div
             key={activeSection}
             initial={{ opacity: 0, y: 20 }}

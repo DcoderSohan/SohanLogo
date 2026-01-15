@@ -1,20 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Lightning from './Lightning';
 
-// Mock Silk component for demonstration
-const Silk = ({ speed, scale, color, noiseIntensity, rotation }) => (
-  <div
-    className="w-full h-full bg-gradient-to-br from-purple-900/20 to-blue-900/20"
-    style={{
-      background: `radial-gradient(circle, ${color}20 0%, transparent 70%)`,
-      animation: `pulse ${speed}s infinite ease-in-out`,
-    }}
-  />
-);
-
-const HeroSection = ({ heroData }) => {
-  const text = "Hire Me • Hire Me • Hire Me •";
+const HeroSection = memo(({ heroData }) => {
+  const text = useMemo(() => "Hire Me • Hire Me • Hire Me •", []);
   const radius = 4;
   const duration = 12;
   const reverse = false;
@@ -39,12 +27,15 @@ const HeroSection = ({ heroData }) => {
     return () => clearInterval(interval);
   }, [subtitle, subtitleAlt]);
 
-  const letters = [...text, " "];
-  const angleStep = 360 / letters.length;
+  const letters = useMemo(() => [...text, " "], [text]);
+  const angleStep = useMemo(() => 360 / letters.length, [letters.length]);
 
-  const onHireClick = () => {
-    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-  };
+  const onHireClick = useCallback(() => {
+    const contactEl = document.getElementById("contact");
+    if (contactEl) {
+      contactEl.scrollIntoView({ behavior: "smooth" });
+    }
+  }, []);
 
   useEffect(() => {
     if (document.fonts) {
@@ -133,14 +124,14 @@ const HeroSection = ({ heroData }) => {
           </h1>
 
           {/* Fixed width container to prevent horizontal scrolling */}
-          <div className="relative w-full flex justify-center md:justify-start items-center px-2 md:px-0 overflow-hidden">
+          <div className="relative w-full flex justify-center md:justify-start items-center px-4 md:px-0 overflow-visible">
             <div
               className="relative flex justify-center md:justify-start items-center w-full md:w-auto"
               style={{
                 width: "100%",
-                maxWidth: "clamp(280px, 90vw, 900px)",
+                maxWidth: "clamp(280px, 95vw, 900px)",
                 minHeight: "clamp(60px, 12vw, 140px)",
-                overflow: "hidden",
+                overflow: "visible",
               }}
             >
               <AnimatePresence mode="wait" initial={false}>
@@ -150,10 +141,10 @@ const HeroSection = ({ heroData }) => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute inset-0 flex justify-center md:justify-start items-center"
+                  className="absolute inset-0 flex justify-center md:justify-start items-center w-full"
                   style={{ willChange: "opacity" }}
                 >
-                  <div className="flex justify-center md:justify-start items-center w-full overflow-hidden">
+                  <div className="flex justify-center md:justify-start items-center w-full overflow-visible px-2 md:px-0">
                     {currentWord.split("").map((char, i) => (
                       <motion.span
                         key={`${currentWord}-${char}-${i}`}
@@ -168,7 +159,7 @@ const HeroSection = ({ heroData }) => {
                         }}
                         className="inline-block"
                         style={{
-                          fontSize: "clamp(5rem, 14vw, 8rem)",
+                          fontSize: "clamp(3rem, 10vw, 8rem)",
                           lineHeight: 1,
                           whiteSpace: "nowrap",
                           willChange: "transform, opacity",
@@ -186,7 +177,7 @@ const HeroSection = ({ heroData }) => {
       </div>
 
       {/* Rotating circle with Hire Me button - Fixed outside content container */}
-      <div className="hire-me-circle fixed bottom-4 right-4 sm:bottom-6 sm:right-6 md:absolute md:bottom-8 md:right-8 flex items-center justify-center w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 z-20">
+      <div className="hire-me-circle fixed bottom-20 right-4 sm:bottom-24 sm:right-6 md:absolute md:bottom-8 md:right-8 flex items-center justify-center w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 z-20">
         <div
           className="relative inline-block w-full h-full rotating-circle"
           style={{ 
@@ -371,36 +362,42 @@ const HeroSection = ({ heroData }) => {
         
         /* Larger text for mobile and tablet with proper overflow handling */
         @media (max-width: 1023px) {
-          .title h1,
+          .title h1 {
+            font-size: clamp(3rem, 9vw, 7rem) !important;
+          }
           .title .inline-block {
-            font-size: clamp(4rem, 12vw, 7rem) !important;
+            font-size: clamp(3rem, 9vw, 7rem) !important;
           }
           .title > div > div {
             width: 100% !important;
             max-width: 100% !important;
-            overflow: hidden !important;
+            overflow: visible !important;
+            padding: 0 0.5rem !important;
           }
           .title > div > div > div {
             width: auto !important;
             max-width: 100% !important;
-            overflow: hidden !important;
+            overflow: visible !important;
           }
         }
         
         @media (max-width: 767px) {
-          .title h1,
+          .title h1 {
+            font-size: clamp(2.5rem, 8vw, 6rem) !important;
+          }
           .title .inline-block {
-            font-size: clamp(3.5rem, 14vw, 6rem) !important;
+            font-size: clamp(2.5rem, 8vw, 6rem) !important;
           }
           .title > div > div {
             width: 100% !important;
             max-width: 100% !important;
-            overflow: hidden !important;
+            overflow: visible !important;
+            padding: 0 0.75rem !important;
           }
           .title > div > div > div {
             width: auto !important;
             max-width: 100% !important;
-            overflow: hidden !important;
+            overflow: visible !important;
           }
         }
         
@@ -408,7 +405,7 @@ const HeroSection = ({ heroData }) => {
         @media (max-width: 1023px) {
           .hire-me-circle {
             position: fixed !important;
-            bottom: 1rem !important;
+            bottom: 5rem !important;
             right: 1rem !important;
             top: auto !important;
             left: auto !important;
@@ -484,6 +481,8 @@ const HeroSection = ({ heroData }) => {
       `}</style>
     </div>
   );
-};
+});
+
+HeroSection.displayName = 'HeroSection';
 
 export default HeroSection;

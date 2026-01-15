@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense, useCallback, memo } from "react";
 import "./App.css";
 import Navbar from "./Components/Navbar/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -22,10 +22,19 @@ const PageLoader = () => (
 );
 
 
-function App() {
+const App = memo(() => {
   const [isLoading, setIsLoading] = useState(true);
   const [showPillars, setShowPillars] = useState(false);
   const [contentAnimated, setContentAnimated] = useState(false);
+
+  const handlePreloaderDone = useCallback(() => {
+    setIsLoading(false);
+    setShowPillars(true);
+  }, []);
+
+  const handlePillarRevealDone = useCallback(() => {
+    setShowPillars(false);
+  }, []);
 
   // Trigger content animation after pillars start opening
   useEffect(() => {
@@ -42,24 +51,21 @@ function App() {
     <ErrorBoundary>
       <div className="bg-[#080808] relative min-h-screen">
         {isLoading && (
-          <Preloader onDone={() => {
-            setIsLoading(false);
-            setShowPillars(true);
-          }} />
+          <Preloader onDone={handlePreloaderDone} />
         )}
         {showPillars && (
-          <PillarReveal onDone={() => setShowPillars(false)} />
+          <PillarReveal onDone={handlePillarRevealDone} />
         )}
         {/* Main content always rendered, but animated */}
         <div
-          className={`transition-all duration-700 ${
+          className={`transition-all duration-400 ${
             showPillars
               ? "pointer-events-none select-none"
               : ""
           }`}
         >
           <Router>
-            <Navbar className={`transition-all duration-700 ${
+            <Navbar className={`transition-all duration-400 ${
               contentAnimated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
             }`} />
             <Suspense fallback={<PageLoader />}>
@@ -84,6 +90,8 @@ function App() {
       </div>
     </ErrorBoundary>
   );
-}
+});
+
+App.displayName = 'App';
 
 export default App;

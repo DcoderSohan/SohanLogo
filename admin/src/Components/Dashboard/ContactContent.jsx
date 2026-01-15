@@ -195,41 +195,41 @@ const ContactContent = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-3 sm:p-4"
+            className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-2 sm:p-3 md:p-4"
           >
-            <div className="text-purple-400 text-xs sm:text-sm mb-1">Total</div>
-            <div className="text-xl sm:text-2xl font-bold text-white">{stats.total}</div>
+            <div className="text-purple-400 text-[10px] sm:text-xs md:text-sm mb-0.5 sm:mb-1">Total</div>
+            <div className="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight">{stats.total}</div>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4"
+            className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-2 sm:p-3 md:p-4"
           >
-            <div className="text-blue-400 text-sm mb-1">New</div>
-            <div className="text-2xl font-bold text-white">{stats.new}</div>
+            <div className="text-blue-400 text-[10px] sm:text-xs md:text-sm mb-0.5 sm:mb-1">New</div>
+            <div className="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight">{stats.new}</div>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-4"
+            className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-2 sm:p-3 md:p-4"
           >
-            <div className="text-yellow-400 text-sm mb-1">Read</div>
-            <div className="text-2xl font-bold text-white">{stats.read}</div>
+            <div className="text-yellow-400 text-[10px] sm:text-xs md:text-sm mb-0.5 sm:mb-1">Read</div>
+            <div className="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight">{stats.read}</div>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="bg-green-500/10 border border-green-500/20 rounded-lg p-4"
+            className="bg-green-500/10 border border-green-500/20 rounded-lg p-2 sm:p-3 md:p-4"
           >
-            <div className="text-green-400 text-sm mb-1">Replied</div>
-            <div className="text-2xl font-bold text-white">{stats.replied}</div>
+            <div className="text-green-400 text-[10px] sm:text-xs md:text-sm mb-0.5 sm:mb-1">Replied</div>
+            <div className="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight">{stats.replied}</div>
           </motion.div>
           <motion.div
             whileHover={{ scale: 1.05 }}
-            className="bg-gray-500/10 border border-gray-500/20 rounded-lg p-4"
+            className="bg-gray-500/10 border border-gray-500/20 rounded-lg p-2 sm:p-3 md:p-4"
           >
-            <div className="text-gray-400 text-sm mb-1">Archived</div>
-            <div className="text-2xl font-bold text-white">{stats.archived}</div>
+            <div className="text-gray-400 text-[10px] sm:text-xs md:text-sm mb-0.5 sm:mb-1">Archived</div>
+            <div className="text-lg sm:text-xl md:text-2xl font-bold text-white leading-tight">{stats.archived}</div>
           </motion.div>
         </div>
       </div>

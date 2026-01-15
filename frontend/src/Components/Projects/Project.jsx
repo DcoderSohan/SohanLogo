@@ -50,13 +50,14 @@ const Project = ({ projects: projectsProp = [] }) => {
     <section
       ref={sectionRef}
       className={`
-        min-h-screen py-20 px-4 overflow-hidden
+        min-h-screen pt-28 sm:pt-32 md:pt-40 lg:pt-36 pb-20 px-4 md:px-8 overflow-hidden
         bg-[#080808]
         bg-[url('/projectImgBg.webp')]
         md:bg-[url('/projectsImg.webp')]
         bg-cover bg-center
         md:bg-cover md:bg-center
         relative
+        project-section
       `}
     >
       {/* Overlay for low opacity effect */}
@@ -64,7 +65,7 @@ const Project = ({ projects: projectsProp = [] }) => {
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div
-          className={`text-center mb-16 transition-all duration-1000 ${
+          className={`text-center mb-12 md:mb-16 transition-all duration-1000 ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
@@ -77,7 +78,7 @@ const Project = ({ projects: projectsProp = [] }) => {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 md:gap-6 lg:gap-8 mb-12">
           {projects.length === 0 ? (
             <p className="text-gray-400 text-center py-8 col-span-2">No projects available.</p>
           ) : (
@@ -127,7 +128,7 @@ const ProjectCard = ({ project, index, isVisible }) => {
 
   return (
     <div
-      className={`group relative transition-all duration-700 ease-out ${
+      className={`group relative transition-all duration-400 ease-out ${
         isVisible
           ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-20"
@@ -150,6 +151,13 @@ const ProjectCard = ({ project, index, isVisible }) => {
         shadow-lg
         overflow-hidden
         transition-transform duration-500
+        h-full
+        flex
+        flex-col
+        max-w-full
+        md:max-h-[600px]
+        lg:max-h-none
+        project-card
       "
       >
         {/* Featured Badge */}
@@ -167,7 +175,7 @@ const ProjectCard = ({ project, index, isVisible }) => {
               <img
                 src={project.image}
                 alt={project.title}
-                className="w-full h-48 object-cover transition-opacity duration-300"
+                className="w-full h-48 md:h-52 lg:h-64 object-cover transition-opacity duration-300 project-card-image"
                 loading="lazy"
                 decoding="async"
                 onError={() => setImageError(true)}
@@ -182,7 +190,7 @@ const ProjectCard = ({ project, index, isVisible }) => {
           </div>
         </Link>
         {/* Card Content */}
-        <div className="p-6 relative z-10">
+        <div className="p-4 md:p-5 lg:p-6 relative z-10 flex-1 flex flex-col project-card-content">
           <Link to={`/project/${projectId}`}>
             <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-300 transition-colors duration-300 cursor-pointer">
               {project.title}
@@ -202,8 +210,8 @@ const ProjectCard = ({ project, index, isVisible }) => {
             </div>
           )}
           {/* Description and Button Side by Side */}
-          <div className="flex items-center justify-between gap-4 w-full">
-            <p className="text-gray-300 text-sm leading-relaxed flex-1 w-[60%]">
+          <div className="flex items-center justify-between gap-4 w-full mt-auto">
+            <p className="text-gray-300 text-sm md:text-sm leading-relaxed flex-1 w-[60%] line-clamp-2">
               {project.description || "No description available."}
             </p>
             {project.liveUrl && (
@@ -254,6 +262,23 @@ const styles = `
   }
   .group-hover\\:animate-uniqueArrow:hover {
     animation: uniqueArrow 0.6s cubic-bezier(.68,-0.55,.27,1.55);
+  }
+  
+  /* Tablet-specific fixes */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .project-section {
+      padding-top: 10rem !important;
+    }
+    .project-card {
+      max-height: 470px !important;
+      min-height: 430px !important;
+    }
+    .project-card .project-card-image {
+      height: 170px !important;
+    }
+    .project-card-content {
+      padding: 1rem 1.25rem !important;
+    }
   }
 `;
 
