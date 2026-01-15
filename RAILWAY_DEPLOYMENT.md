@@ -71,7 +71,7 @@ Without setting the Root Directory, Railway will try to build from the repositor
 
 4. **Add Environment Variables**:
    ```
-   VITE_API_URL=https://your-backend.up.railway.app/api
+   VITE_API_URL=https://sohanlogo.onrender.com/api
    ```
    **Note**: Railway automatically sets the `PORT` environment variable - you don't need to set it manually.
 
@@ -90,7 +90,7 @@ Without setting the Root Directory, Railway will try to build from the repositor
 
 4. **Add Environment Variables**:
    ```
-   VITE_API_URL=https://your-backend.up.railway.app/api
+   VITE_API_URL=https://sohanlogo.onrender.com/api
    ```
    **Note**: Railway automatically sets the `PORT` environment variable - you don't need to set it manually.
 
