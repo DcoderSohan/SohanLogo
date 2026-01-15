@@ -33,7 +33,7 @@ const About = memo(() => {
   return (
     <section className="relative min-h-[70vh] flex items-center justify-center px-4 py-20 md:py-32 bg-[#080808]">
       <div className="relative z-10 max-w-6xl mx-auto w-full">
-        <div className="flex flex-col items-center justify-center gap-8 md:gap-12">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 md:gap-12">
           {/* Profile Picture with Rounded Rectangle and Floating Tag */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -129,7 +129,7 @@ const About = memo(() => {
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex-1 text-center max-w-2xl mx-auto"
+            className="flex-1 text-center lg:text-left max-w-2xl mx-auto lg:mx-0"
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white">
               {intro?.name || "Sohan Sarang"}
@@ -140,7 +140,7 @@ const About = memo(() => {
             <p className="text-lg md:text-xl text-gray-300 leading-relaxed mb-6">
               {intro?.description || "I'm a passionate full-stack web developer with a strong foundation in modern web technologies. I love creating beautiful, functional, and user-friendly web experiences. With expertise in React.js, Node.js, and various frontend/backend technologies, I bring ideas to life through code."}
             </p>
-            <div className="flex flex-wrap gap-3 justify-center">
+            <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
               {intro?.tags && intro.tags.length > 0 ? (
                 intro.tags.map((tag, idx) => (
                   <span
