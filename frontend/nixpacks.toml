@@ -2,11 +2,11 @@
 nixPkgs = ["nodejs-18_x"]
 
 [phases.install]
-cmds = ["npm install"]
+cmds = ["cd frontend && npm install"]
 
 [phases.build]
-cmds = ["npm run build"]
+cmds = ["cd frontend && npm run build"]
 
 [start]
-cmd = "npm run preview -- --host 0.0.0.0 --port $PORT"
+cmd = "cd frontend && npm run preview -- --host 0.0.0.0 --port $PORT"
 
