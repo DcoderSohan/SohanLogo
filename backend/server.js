@@ -28,7 +28,12 @@ const corsOptions = {
     const allowedOriginsEnv = process.env.ALLOWED_ORIGINS;
     const allowedOrigins = allowedOriginsEnv 
       ? allowedOriginsEnv.split(',').map(url => url.trim())
-      : ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:5174'];
+      : [
+          'http://localhost:5173', 
+          'http://localhost:3000', 
+          'http://localhost:5174',
+          'https://sohan-sarang.onrender.com'
+        ];
     
     // Allow requests with no origin (like mobile apps or curl requests)
     // In production, you might want to be more strict
