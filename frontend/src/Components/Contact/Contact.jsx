@@ -534,50 +534,19 @@ const Contact = memo(() => {
                     transition: 'opacity 0.4s ease, transform 0.4s ease',
                   }}
                 >
-                <div className="backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-gray-700/30 shadow-xl bg-gray-900/30 contact-form-container">
-              ) : (
-                <motion.div
-                  ref={formRef}
-                  variants={formVariants}
-                  initial="hidden"
-                  animate={formControls}
-                  className="relative order-2 px-2 sm:px-4"
-                >
-                <motion.div
-                  className="backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-gray-700/30 shadow-2xl bg-gray-900/20 contact-form-container"
-                  whileHover={{
-                    borderColor: "rgba(168, 85, 247, 0.3)",
-                    transition: { duration: 0.3 },
-                  }}
-                >
-              )}
-                {/* Notification */}
-                {notification && (
-                  isMobile ? (
-                    <div
-                      className={`mb-4 text-center font-semibold text-sm sm:text-base px-4 py-3 rounded-lg ${
-                        notificationType === "success"
-                          ? "text-green-400 bg-green-400/10 border border-green-400/20"
-                          : "text-red-400 bg-red-400/10 border border-red-400/20"
-                      }`}
-                    >
-                      {notification}
-                    </div>
-                  ) : (
-                    <motion.div
-                      className={`mb-4 text-center font-semibold text-sm sm:text-base px-4 py-3 rounded-lg ${
-                        notificationType === "success"
-                          ? "text-green-400 bg-green-400/10 border border-green-400/20"
-                          : "text-red-400 bg-red-400/10 border border-red-400/20"
-                      }`}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                    >
-                      {notification}
-                    </motion.div>
-                  )
-                )}
+                  <div className="backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-gray-700/30 shadow-xl bg-gray-900/30 contact-form-container">
+                    {/* Notification */}
+                    {notification && (
+                      <div
+                        className={`mb-4 text-center font-semibold text-sm sm:text-base px-4 py-3 rounded-lg ${
+                          notificationType === "success"
+                            ? "text-green-400 bg-green-400/10 border border-green-400/20"
+                            : "text-red-400 bg-red-400/10 border border-red-400/20"
+                        }`}
+                      >
+                        {notification}
+                      </div>
+                    )}
 
                 <div className="space-y-4 sm:space-y-6">
                   {/* Dynamic Form inputs */}
@@ -600,19 +569,8 @@ const Contact = memo(() => {
                       };
                       const color = colorMap[field.type] || "purple";
 
-                      return isMobile ? (
-                        <div
-                          key={field.name}
-                          className="relative group"
-                        >
-                      ) : (
-                        <motion.div
-                          key={field.name}
-                          custom={index}
-                          variants={inputVariants}
-                          className="relative group"
-                        >
-                      );
+                      const inputContent = (
+                        <>
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
                             <Icon
                               className={`h-4 w-4 sm:h-5 sm:w-5 text-gray-400 group-focus-within:text-${color}-400 transition-colors duration-300`}
@@ -633,7 +591,25 @@ const Contact = memo(() => {
                           `}
                             required={field.required}
                           />
-                        {isMobile ? </div> : </motion.div>}
+                        </>
+                      );
+
+                      return isMobile ? (
+                        <div
+                          key={field.name}
+                          className="relative group"
+                        >
+                          {inputContent}
+                        </div>
+                      ) : (
+                        <motion.div
+                          key={field.name}
+                          custom={index}
+                          variants={inputVariants}
+                          className="relative group"
+                        >
+                          {inputContent}
+                        </motion.div>
                       );
                     })}
 
@@ -677,8 +653,7 @@ const Contact = memo(() => {
                       );
                     })}
 
-                  {/* Submit Button */}
-                  {isMobile ? (
+                    {/* Submit Button */}
                     <div className="flex justify-center pt-2 sm:pt-4">
                       <button
                         type="button"
@@ -695,7 +670,9 @@ const Contact = memo(() => {
                         )}
                       </button>
                     </div>
-                  ) : (
+                  </div>
+                </div>
+              ) : (
                     <motion.div className="flex justify-center pt-2 sm:pt-4">
                       <motion.button
                         type="button"
@@ -738,13 +715,175 @@ const Contact = memo(() => {
                       </motion.button>
                     </motion.div>
                   )}
-                </div>
-                {isMobile ? (
                   </div>
                 </div>
               ) : (
+                <motion.div
+                  ref={formRef}
+                  variants={formVariants}
+                  initial="hidden"
+                  animate={formControls}
+                  className="relative order-2 px-2 sm:px-4"
+                >
+                  <motion.div
+                    className="backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-gray-700/30 shadow-2xl bg-gray-900/20 contact-form-container"
+                    whileHover={{
+                      borderColor: "rgba(168, 85, 247, 0.3)",
+                      transition: { duration: 0.3 },
+                    }}
+                  >
+                    {/* Notification */}
+                    {notification && (
+                      <motion.div
+                        className={`mb-4 text-center font-semibold text-sm sm:text-base px-4 py-3 rounded-lg ${
+                          notificationType === "success"
+                            ? "text-green-400 bg-green-400/10 border border-green-400/20"
+                            : "text-red-400 bg-red-400/10 border border-red-400/20"
+                        }`}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                      >
+                        {notification}
+                      </motion.div>
+                    )}
+
+                    <div className="space-y-4 sm:space-y-6">
+                      {/* Dynamic Form inputs */}
+                      {formFields && formFields.length > 0 && formFields
+                        .filter(field => field && field.type !== "textarea")
+                        .map((field, index) => {
+                          // Map field types to icons
+                          const iconMap = {
+                            text: User,
+                            email: Mail,
+                            tel: Phone,
+                            number: Phone,
+                          };
+                          const Icon = iconMap[field.type] || User;
+                          const colorMap = {
+                            text: "purple",
+                            email: "blue",
+                            tel: "green",
+                            number: "green",
+                          };
+                          const color = colorMap[field.type] || "purple";
+
+                          const inputContent = (
+                            <>
+                              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                <Icon
+                                  className={`h-4 w-4 sm:h-5 sm:w-5 text-gray-400 group-focus-within:text-${color}-400 transition-colors duration-300`}
+                                />
+                              </div>
+                              <input
+                                type={field.type}
+                                name={field.name}
+                                value={formData[field.name] || ""}
+                                onChange={handleInputChange}
+                                placeholder={field.placeholder || field.label}
+                                className={`contact-input
+                                w-full pl-8 sm:pl-10 pr-4 py-3 sm:py-3 
+                                bg-gray-900/50 border border-gray-600/50 rounded-lg
+                                text-white placeholder-gray-400 text-sm sm:text-base
+                                focus:border-${color}-400 focus:outline-none focus:ring-2 focus:ring-${color}-400/20
+                                transition-all duration-300 backdrop-blur-sm
+                              `}
+                                required={field.required}
+                              />
+                            </>
+                          );
+
+                          return (
+                            <motion.div
+                              key={field.name}
+                              custom={index}
+                              variants={inputVariants}
+                              className="relative group"
+                            >
+                              {inputContent}
+                            </motion.div>
+                          );
+                        })}
+
+                      {/* Textarea fields */}
+                      {formFields && formFields.length > 0 && formFields
+                        .filter(field => field && field.type === "textarea")
+                        .map((field, index) => {
+                          const content = (
+                            <>
+                              <div className="absolute top-3 sm:top-4 left-0 pl-3 flex items-center pointer-events-none z-10">
+                                <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 group-focus-within:text-pink-400 transition-colors duration-300" />
+                              </div>
+                              <textarea
+                                name={field.name}
+                                value={formData[field.name] || ""}
+                                onChange={handleInputChange}
+                                placeholder={field.placeholder || field.label}
+                                rows={isMobile ? "3" : "4"}
+                                className="w-full pl-8 sm:pl-10 pr-4 py-3 sm:py-2 bg-gray-900/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-400/20 transition-all duration-300 backdrop-blur-sm resize-none text-sm sm:text-base contact-textarea"
+                                required={field.required}
+                              />
+                            </>
+                          );
+
+                          return (
+                            <motion.div
+                              key={field.name}
+                              custom={formFields.filter(f => f.type !== "textarea").length + index}
+                              variants={inputVariants}
+                              className="relative group"
+                            >
+                              {content}
+                            </motion.div>
+                          );
+                        })}
+
+                      {/* Submit Button */}
+                      <motion.div className="flex justify-center pt-2 sm:pt-4">
+                        <motion.button
+                          type="button"
+                          onClick={handleSubmit}
+                          variants={buttonVariants}
+                          whileHover="hover"
+                          whileTap="tap"
+                          disabled={isSubmitting}
+                          className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-gradient-to-r from-purple-500 via-purple-900 to-blue-500 rounded-full text-white font-semibold shadow-2xl overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500"
+                            initial={{ scale: 0 }}
+                            whileHover={{ scale: 1 }}
+                            transition={{ duration: 0.3 }}
+                          />
+
+                          {isSubmitting ? (
+                            <motion.div
+                              animate={{ rotate: 360 }}
+                              transition={{
+                                duration: 1,
+                                repeat: Infinity,
+                                ease: "linear",
+                              }}
+                              className="relative z-10"
+                            >
+                              <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full" />
+                            </motion.div>
+                          ) : (
+                            <Send className="h-5 w-5 sm:h-6 sm:w-6 relative z-10" />
+                          )}
+
+                          <motion.div
+                            className="absolute inset-0 bg-white/20 rounded-full"
+                            initial={{ scale: 0, opacity: 0 }}
+                            whileTap={{ scale: 1, opacity: 1 }}
+                            transition={{ duration: 0.1 }}
+                          />
+                        </motion.button>
+                      </motion.div>
+                    </div>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
               )}
             </div>
           )}
