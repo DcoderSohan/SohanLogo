@@ -13,7 +13,8 @@ import {
   Save,
   LayoutGrid,
   Settings,
-  LogOut
+  LogOut,
+  ExternalLink
 } from "lucide-react";
 import { useAuth } from "../Context/AuthContext";
 import HomeContent from "../Components/Dashboard/HomeContent";
@@ -222,10 +223,11 @@ const Dashboard = () => {
             <h1 className="text-base sm:text-lg md:text-xl font-bold mt-2 sm:mt-3 text-white">Dashboard</h1>
           </div>
           <button
-            onClick={() => window.open("/", "_blank")}
-            className="w-full px-3 sm:px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-colors text-xs sm:text-sm font-medium text-white"
+            onClick={() => window.open("https://sohan-sarang.vercel.app/", "_blank")}
+            className="w-full flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-purple-500/20 to-blue-500/20 hover:from-purple-500/30 hover:to-blue-500/30 border border-purple-500/30 rounded-lg transition-all text-xs sm:text-sm font-medium text-white hover:scale-105"
           >
-            View Site
+            <span>View Site</span>
+            <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
           </button>
         </div>
 
