@@ -344,7 +344,7 @@ const Contact = memo(() => {
         id="contact"
       >
         {/* Optimized animated background elements - reduced on mobile */}
-        {!isMobile && (
+        {!isMobile ? (
           <motion.div
             className="absolute inset-0 overflow-hidden pointer-events-none"
             variants={backgroundVariants}
@@ -406,7 +406,7 @@ const Contact = memo(() => {
               }}
             />
           </motion.div>
-        )}
+        ) : null}
 
         <div className="relative w-full max-w-7xl mx-auto px-4">
           {!isStandalonePage ? (
@@ -850,6 +850,7 @@ const Contact = memo(() => {
               {/* Top Section: Title/Text and Form side by side (desktop), stacked on mobile/tablet */}
               <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start mb-8 sm:mb-12 contact-grid">
                 {/* Left side - Title/Text */}
+                <div>
                 {isMobile ? (
                   <div
                     ref={titleRef}
@@ -959,6 +960,7 @@ const Contact = memo(() => {
                       />
                     ))}
                   </motion.div>
+                </div>
 
                 {/* Right side - Form */}
                 <motion.div
