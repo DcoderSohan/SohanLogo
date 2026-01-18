@@ -441,6 +441,7 @@ const Contact = memo(() => {
                     </h1>
                   ))}
                 </div>
+                </div>
               ) : (
                 <motion.div
                   ref={titleRef}
@@ -468,6 +469,7 @@ const Contact = memo(() => {
                     </motion.h1>
                   ))}
                 </div>
+                </motion.div>
               )}
 
               {pageSettings.description && (
@@ -521,7 +523,6 @@ const Contact = memo(() => {
                   ))}
                 </motion.div>
               )}
-              </motion.div>
 
               {/* Right side - Form */}
               {isMobile ? (
