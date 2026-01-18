@@ -55,9 +55,12 @@ const Contact = memo(() => {
     };
 
     fetchContactPageData();
-    const interval = setInterval(fetchContactPageData, 30000);
-    return () => clearInterval(interval);
-  }, []);
+    // Only refetch on standalone page, and less frequently to reduce re-renders
+    if (isStandalonePage) {
+      const interval = setInterval(fetchContactPageData, 60000); // Reduced from 30s to 60s
+      return () => clearInterval(interval);
+    }
+  }, [isStandalonePage]);
 
   // Get map configuration from API or use defaults
   const mapLocation = useMemo(() => contactPageData?.settings?.mapLocation || {
@@ -199,14 +202,14 @@ const Contact = memo(() => {
     }
   };
 
-  // Animation variants
+  // Optimized animation variants - smoother and lighter on mobile
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.6,
-        staggerChildren: 0.15,
+        duration: isMobile ? 0.4 : 0.6,
+        staggerChildren: isMobile ? 0.1 : 0.15,
       },
     },
   };
@@ -214,16 +217,16 @@ const Contact = memo(() => {
   const titleVariants = {
     hidden: {
       opacity: 0,
-      y: isMobile ? -30 : -50,
-      scale: 0.9,
+      y: isMobile ? -20 : -50,
+      scale: 0.95,
     },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.8,
-        ease: [0.6, -0.05, 0.01, 0.99],
+        duration: isMobile ? 0.5 : 0.8,
+        ease: [0.25, 0.46, 0.45, 0.94], // Smoother easing
       },
     },
   };
@@ -231,17 +234,17 @@ const Contact = memo(() => {
   const wordVariants = {
     hidden: {
       opacity: 0,
-      y: 50,
-      rotateX: -90,
+      y: isMobile ? 30 : 50,
+      rotateX: isMobile ? 0 : -90, // Disable 3D transforms on mobile
     },
     visible: (index) => ({
       opacity: 1,
       y: 0,
       rotateX: 0,
       transition: {
-        duration: 0.6,
-        delay: index * 0.2,
-        ease: "easeOut",
+        duration: isMobile ? 0.4 : 0.6,
+        delay: index * (isMobile ? 0.1 : 0.2),
+        ease: [0.25, 0.46, 0.45, 0.94],
       },
     }),
   };
@@ -250,8 +253,8 @@ const Contact = memo(() => {
     hidden: {
       opacity: 0,
       x: isMobile ? 0 : 100,
-      y: isMobile ? 50 : 0,
-      scale: 0.95,
+      y: isMobile ? 30 : 0,
+      scale: 0.98,
     },
     visible: {
       opacity: 1,
@@ -259,8 +262,8 @@ const Contact = memo(() => {
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.8,
-        ease: "easeOut",
+        duration: isMobile ? 0.5 : 0.8,
+        ease: [0.25, 0.46, 0.45, 0.94],
       },
     },
   };
@@ -268,17 +271,17 @@ const Contact = memo(() => {
   const inputVariants = {
     hidden: {
       opacity: 0,
-      y: 20,
-      scale: 0.95,
+      y: isMobile ? 10 : 20,
+      scale: 0.98,
     },
     visible: (index) => ({
       opacity: 1,
       y: 0,
       scale: 1,
       transition: {
-        duration: 0.5,
-        delay: index * 0.1,
-        ease: "easeOut",
+        duration: isMobile ? 0.3 : 0.5,
+        delay: index * (isMobile ? 0.05 : 0.1),
+        ease: [0.25, 0.46, 0.45, 0.94],
       },
     }),
   };
@@ -286,24 +289,24 @@ const Contact = memo(() => {
   const buttonVariants = {
     hidden: {
       opacity: 0,
-      scale: 0,
-      rotate: -180,
+      scale: 0.8,
+      rotate: isMobile ? 0 : -180, // Simpler animation on mobile
     },
     visible: {
       opacity: 1,
       scale: 1,
       rotate: 0,
       transition: {
-        duration: 0.6,
-        ease: "easeOut",
-        delay: 0.6,
+        duration: isMobile ? 0.4 : 0.6,
+        ease: [0.25, 0.46, 0.45, 0.94],
+        delay: isMobile ? 0.3 : 0.6,
       },
     },
     hover: {
-      scale: 1.1,
+      scale: isMobile ? 1.05 : 1.1,
       boxShadow: "0 10px 30px rgba(168, 85, 247, 0.4)",
       transition: {
-        duration: 0.3,
+        duration: 0.2,
       },
     },
     tap: {
@@ -316,7 +319,7 @@ const Contact = memo(() => {
     visible: {
       opacity: 1,
       transition: {
-        duration: 1.5,
+        duration: isMobile ? 0.8 : 1.5,
         ease: "easeInOut",
       },
     },
@@ -326,62 +329,81 @@ const Contact = memo(() => {
     <div>
       <SuccessModal isOpen={showSuccessModal} onClose={() => setShowSuccessModal(false)} />
       <div
-        className={`${isStandalonePage ? 'min-h-screen' : ''} flex ${isStandalonePage ? 'items-start' : 'items-center'} justify-center overflow-hidden relative py-8 sm:py-12`}
+        className={`${isStandalonePage ? 'min-h-screen' : ''} flex ${isStandalonePage ? 'items-start' : 'items-center'} justify-center relative py-8 sm:py-12`}
         style={{
           background:
             "linear-gradient(135deg, #080808 40%, #1e1b4b 70%, #4f46e5 100%)",
+          touchAction: 'pan-y', // Enable vertical scrolling on mobile
+          WebkitOverflowScrolling: 'touch', // Smooth scrolling on iOS
+          overflowX: 'hidden',
+          overflowY: 'visible',
         }}
         id="contact"
       >
-        {/* Animated background elements */}
-        <motion.div
-          className="absolute inset-0 overflow-hidden"
-          variants={backgroundVariants}
-          initial="hidden"
-          animate="visible"
-        >
+        {/* Optimized animated background elements - reduced on mobile */}
+        {!isMobile && (
           <motion.div
-            className="absolute top-1/4 left-1/6 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-purple-500/10 rounded-full blur-3xl"
-            animate={{
-              scale: [1, 1.3, 1],
-              opacity: [0.2, 0.4, 0.2],
-              x: [0, 30, 0],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-          <motion.div
-            className="absolute bottom-1/4 right-1/6 w-24 h-24 sm:w-40 sm:h-40 lg:w-48 lg:h-48 bg-blue-500/10 rounded-full blur-3xl"
-            animate={{
-              scale: [1.2, 1, 1.2],
-              opacity: [0.4, 0.2, 0.4],
-              x: [0, -20, 0],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            }}
-          />
-          <motion.div
-            className="absolute top-1/2 right-1/3 w-20 h-20 sm:w-32 sm:h-32 lg:w-40 lg:h-40 bg-green-500/8 rounded-full blur-2xl"
-            animate={{
-              scale: [1, 1.4, 1],
-              opacity: [0.3, 0.5, 0.3],
-              y: [0, -40, 0],
-            }}
-            transition={{
-              duration: 5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 2,
-            }}
-          />
-        </motion.div>
+            className="absolute inset-0 overflow-hidden pointer-events-none"
+            variants={backgroundVariants}
+            initial="hidden"
+            animate="visible"
+            style={{ willChange: 'opacity' }}
+          >
+            <motion.div
+              className="absolute top-1/4 left-1/6 w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 bg-purple-500/10 rounded-full blur-3xl"
+              animate={{
+                scale: [1, 1.3, 1],
+                opacity: [0.2, 0.4, 0.2],
+                x: [0, 30, 0],
+              }}
+              transition={{
+                duration: 8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              style={{ 
+                willChange: 'transform, opacity',
+                transform: 'translateZ(0)',
+              }}
+            />
+            <motion.div
+              className="absolute bottom-1/4 right-1/6 w-24 h-24 sm:w-40 sm:h-40 lg:w-48 lg:h-48 bg-blue-500/10 rounded-full blur-3xl"
+              animate={{
+                scale: [1.2, 1, 1.2],
+                opacity: [0.4, 0.2, 0.4],
+                x: [0, -20, 0],
+              }}
+              transition={{
+                duration: 6,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1,
+              }}
+              style={{ 
+                willChange: 'transform, opacity',
+                transform: 'translateZ(0)',
+              }}
+            />
+            <motion.div
+              className="absolute top-1/2 right-1/3 w-20 h-20 sm:w-32 sm:h-32 lg:w-40 lg:h-40 bg-green-500/8 rounded-full blur-2xl"
+              animate={{
+                scale: [1, 1.4, 1],
+                opacity: [0.3, 0.5, 0.3],
+                y: [0, -40, 0],
+              }}
+              transition={{
+                duration: 7,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 2,
+              }}
+              style={{ 
+                willChange: 'transform, opacity',
+                transform: 'translateZ(0)',
+              }}
+            />
+          </motion.div>
+        )}
 
         <div className="relative w-full max-w-7xl mx-auto px-4">
           {!isStandalonePage && (
@@ -425,29 +447,33 @@ const Contact = memo(() => {
                 </motion.div>
               )}
 
-              {/* Mobile-only decorative elements */}
-              <motion.div
-                className="mt-4 flex justify-center sm:hidden"
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 1.5, duration: 0.6 }}
-              >
-                {[0, 1, 2].map((i) => (
-                  <motion.div
-                    key={i}
-                    className="w-2 h-2 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full mx-1"
-                    animate={{
-                      scale: [1, 1.5, 1],
-                      opacity: [0.5, 1, 0.5],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      delay: i * 0.3,
-                    }}
-                  />
-                ))}
-              </motion.div>
+              {/* Mobile-only decorative elements - simplified */}
+              {isMobile && (
+                <motion.div
+                  className="mt-4 flex justify-center sm:hidden"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8, duration: 0.4 }}
+                >
+                  {[0, 1, 2].map((i) => (
+                    <motion.div
+                      key={i}
+                      className="w-2 h-2 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full mx-1"
+                      animate={{
+                        scale: [1, 1.3, 1],
+                        opacity: [0.5, 0.8, 0.5],
+                      }}
+                      transition={{
+                        duration: 2.5,
+                        repeat: Infinity,
+                        delay: i * 0.4,
+                        ease: "easeInOut",
+                      }}
+                      style={{ willChange: 'transform, opacity' }}
+                    />
+                  ))}
+                </motion.div>
+              )}
               </motion.div>
 
               {/* Right side - Form */}
@@ -650,26 +676,28 @@ const Contact = memo(() => {
                     </motion.div>
                   )}
 
-                  {/* Decorative elements */}
+                  {/* Decorative elements - optimized */}
                   <motion.div
                     className="mt-4 flex justify-center sm:justify-center md:justify-center lg:justify-start"
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 1.5, duration: 0.6 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: isMobile ? 0.8 : 1.2, duration: isMobile ? 0.4 : 0.6 }}
                   >
                     {[0, 1, 2].map((i) => (
                       <motion.div
                         key={i}
                         className="w-2 h-2 bg-gradient-to-r from-purple-400 to-blue-400 rounded-full mx-1"
                         animate={{
-                          scale: [1, 1.5, 1],
-                          opacity: [0.5, 1, 0.5],
+                          scale: [1, 1.3, 1],
+                          opacity: [0.5, 0.8, 0.5],
                         }}
                         transition={{
-                          duration: 2,
+                          duration: isMobile ? 2.5 : 2,
                           repeat: Infinity,
-                          delay: i * 0.3,
+                          delay: i * (isMobile ? 0.4 : 0.3),
+                          ease: "easeInOut",
                         }}
+                        style={{ willChange: 'transform, opacity' }}
                       />
                     ))}
                   </motion.div>
@@ -862,8 +890,48 @@ const Contact = memo(() => {
         </div>
       </div>
       
-      {/* Tablet-specific styles */}
+      {/* Performance and mobile scrolling optimizations */}
       <style>{`
+        /* Mobile scrolling fixes */
+        @media (max-width: 767px) {
+          #contact {
+            -webkit-overflow-scrolling: touch !important;
+            overflow-scrolling: touch !important;
+            touch-action: pan-y !important;
+            overscroll-behavior-y: auto !important;
+            position: relative !important;
+            will-change: scroll-position !important;
+          }
+          
+          #contact * {
+            -webkit-tap-highlight-color: transparent !important;
+            touch-action: pan-y !important;
+          }
+          
+          /* Disable heavy effects on mobile */
+          #contact .backdrop-blur-xl {
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+          }
+          
+          /* Optimize animations */
+          #contact [class*="motion"] {
+            will-change: transform, opacity !important;
+            transform: translateZ(0) !important;
+            backface-visibility: hidden !important;
+            -webkit-backface-visibility: hidden !important;
+          }
+          
+          /* Prevent animation blocking scroll */
+          #contact {
+            pointer-events: auto !important;
+          }
+          
+          #contact > div {
+            pointer-events: auto !important;
+          }
+        }
+        
         @media (min-width: 768px) and (max-width: 1023px) {
           /* Fix text size for tablet */
           .contact-title-text {
@@ -893,6 +961,24 @@ const Contact = memo(() => {
             min-height: 100px !important;
             padding: 0.75rem 1rem !important;
           }
+          
+          /* Tablet scrolling */
+          #contact {
+            -webkit-overflow-scrolling: touch !important;
+            touch-action: pan-y !important;
+          }
+        }
+        
+        /* General performance optimizations */
+        #contact {
+          contain: layout style paint !important;
+          isolation: isolate !important;
+        }
+        
+        /* GPU acceleration for animated elements */
+        #contact [data-framer-component-type] {
+          transform: translateZ(0) !important;
+          will-change: transform, opacity !important;
         }
       `}</style>
     </div>

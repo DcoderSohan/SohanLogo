@@ -44,6 +44,12 @@ body {
   min-height: 100vh;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
+  /* Mobile scrolling fixes */
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-y: auto;
+  position: relative;
 }
 
 body::-webkit-scrollbar {
@@ -55,6 +61,12 @@ body::-webkit-scrollbar {
   min-height: 100vh;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
+  /* Mobile scrolling fixes */
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-y: auto;
+  position: relative;
 }
 
 #root::-webkit-scrollbar {
@@ -106,6 +118,61 @@ body::-webkit-scrollbar {
   }
 }
 
+/* Mobile scrolling fixes */
+@media (max-width: 767px) {
+  html, body, #root {
+    -webkit-overflow-scrolling: touch !important;
+    overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    overscroll-behavior-y: auto !important;
+    position: relative !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    /* Prevent scroll blocking on second visit */
+    scroll-behavior: smooth !important;
+  }
+  
+  /* Prevent scroll blocking */
+  * {
+    -webkit-tap-highlight-color: transparent !important;
+  }
+  
+  /* Ensure all sections allow scrolling */
+  section, div[class*="section"], div[id] {
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  /* Fix for second-time scroll issue */
+  body.loaded {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    position: relative !important;
+  }
+  
+  /* Ensure contact section doesn't block scrolling */
+  #contact {
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+    overflow-y: visible !important;
+    position: relative !important;
+  }
+  
+  /* Disable hover effects on mobile to prevent scroll interference */
+  *:hover {
+    transition: none !important;
+  }
+  
+  /* Optimize form interactions */
+  input, textarea, button {
+    touch-action: manipulation !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+}
+
 /* Reduce heavy visual effects on mobile & tablet for smoother performance */
 @media (max-width: 1023px) {
   /* Tone down strong backdrop blur on glass panels */
@@ -113,8 +180,8 @@ body::-webkit-scrollbar {
   .backdrop-blur-lg,
   .backdrop-blur-md,
   .backdrop-blur-sm {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
   }
 
   /* Slightly soften very strong shadows */
@@ -128,6 +195,14 @@ body::-webkit-scrollbar {
   .transition-transform,
   .transition-opacity {
     transition-duration: 220ms !important;
+  }
+  
+  /* Optimize animations on mobile */
+  [class*="motion"], [data-framer-component-type] {
+    will-change: transform, opacity !important;
+    transform: translateZ(0) !important;
+    backface-visibility: hidden !important;
+    -webkit-backface-visibility: hidden !important;
   }
 }
 

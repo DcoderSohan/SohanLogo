@@ -47,6 +47,78 @@ const App = memo(() => {
     }
   }, [showPillars]);
 
+  // Fix mobile scrolling issues - ensure scrolling is always enabled
+  useEffect(() => {
+    const enableScrolling = () => {
+      // Check if mobile device
+      const isMobile = window.innerWidth <= 767;
+      
+      if (isMobile) {
+        // Ensure body and html allow scrolling
+        document.documentElement.style.overflowY = 'auto';
+        document.documentElement.style.touchAction = 'pan-y';
+        document.documentElement.style.webkitOverflowScrolling = 'touch';
+        
+        document.body.style.overflowY = 'auto';
+        document.body.style.touchAction = 'pan-y';
+        document.body.style.webkitOverflowScrolling = 'touch';
+        document.body.style.position = 'relative';
+        
+        // Ensure root allows scrolling
+        const root = document.getElementById('root');
+        if (root) {
+          root.style.overflowY = 'auto';
+          root.style.touchAction = 'pan-y';
+          root.style.webkitOverflowScrolling = 'touch';
+          root.style.position = 'relative';
+        }
+        
+        // Add loaded class to body for CSS targeting
+        document.body.classList.add('loaded');
+      }
+    };
+
+    // Run immediately
+    enableScrolling();
+
+    // Run after a short delay to ensure it applies
+    const timer1 = setTimeout(enableScrolling, 100);
+    const timer2 = setTimeout(enableScrolling, 500);
+    
+    // Run on visibility change (handles second-time opening)
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        setTimeout(enableScrolling, 100);
+      }
+    };
+
+    // Run on focus (handles tab switching back)
+    const handleFocus = () => {
+      setTimeout(enableScrolling, 100);
+    };
+
+    // Run on route changes
+    const handleRouteChange = () => {
+      setTimeout(enableScrolling, 200);
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('pageshow', enableScrolling); // Handles back/forward navigation
+    
+    // Listen for route changes
+    window.addEventListener('popstate', handleRouteChange);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('pageshow', enableScrolling);
+      window.removeEventListener('popstate', handleRouteChange);
+    };
+  }, []);
+
   return (
     <ErrorBoundary>
       <div className="bg-[#080808] relative min-h-screen">
