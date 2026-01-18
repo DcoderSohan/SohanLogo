@@ -673,51 +673,6 @@ const Contact = memo(() => {
                   </div>
                 </div>
               ) : (
-                    <motion.div className="flex justify-center pt-2 sm:pt-4">
-                      <motion.button
-                        type="button"
-                        onClick={handleSubmit}
-                        variants={buttonVariants}
-                        whileHover="hover"
-                        whileTap="tap"
-                        disabled={isSubmitting}
-                        className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-gradient-to-r from-purple-500 via-purple-900 to-blue-500 rounded-full text-white font-semibold shadow-2xl overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500"
-                          initial={{ scale: 0 }}
-                          whileHover={{ scale: 1 }}
-                          transition={{ duration: 0.3 }}
-                        />
-
-                        {isSubmitting ? (
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{
-                              duration: 1,
-                              repeat: Infinity,
-                              ease: "linear",
-                            }}
-                            className="relative z-10"
-                          >
-                            <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full" />
-                          </motion.div>
-                        ) : (
-                          <Send className="h-5 w-5 sm:h-6 sm:w-6 relative z-10" />
-                        )}
-
-                        <motion.div
-                          className="absolute inset-0 bg-white/20 rounded-full"
-                          initial={{ scale: 0, opacity: 0 }}
-                          whileTap={{ scale: 1, opacity: 1 }}
-                          transition={{ duration: 0.1 }}
-                        />
-                      </motion.button>
-                    </motion.div>
-                  )}
-                  </div>
-                </div>
-              ) : (
                 <motion.div
                   ref={formRef}
                   variants={formVariants}
