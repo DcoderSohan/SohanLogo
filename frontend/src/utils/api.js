@@ -1,12 +1,30 @@
 import axios from 'axios';
 
 // Create axios instance with base configuration
+// If VITE_API_URL is not set, use relative URL for Vercel proxy
+// Otherwise use the provided URL or fallback to Render backend
+const getBaseURL = () => {
+  // Always use environment variable if set
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  
+  // If no env var, check if we're on Vercel (has vercel.json proxy)
+  // Use relative URL to leverage Vercel's API proxy
+  if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+    return '/api';
+  }
+  
+  // Fallback to Render backend (works for both local dev and production)
+  return 'https://sohanlogo.onrender.com/api';
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://sohanlogo.onrender.com/api',
+  baseURL: getBaseURL(),
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000, // 10 seconds
+  timeout: 30000, // 30 seconds (increased for slower connections)
 });
 
 // Request interceptor
@@ -30,13 +48,15 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Handle common errors
+    // Handle common errors with better messaging
     if (error.response) {
       // Server responded with error status
-      console.error('API Error:', error.response.data);
+      console.error('API Error:', error.response.status, error.response.data);
     } else if (error.request) {
-      // Request made but no response received
-      console.error('Network Error:', error.request);
+      // Request made but no response received (network error)
+      console.error('Network Error: Unable to reach the server. Please check your internet connection and ensure the backend is running.');
+      // Provide more helpful error message
+      error.message = 'Network Error: Unable to connect to the server. Please try again later.';
     } else {
       // Something else happened
       console.error('Error:', error.message);
