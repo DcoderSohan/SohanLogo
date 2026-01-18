@@ -409,7 +409,7 @@ const Contact = memo(() => {
         )}
 
         <div className="relative w-full max-w-7xl mx-auto px-4">
-          {!isStandalonePage && (
+          {!isStandalonePage ? (
             <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start py-8 sm:py-12 contact-grid">
               {/* Left side - Title */}
               {isMobile ? (
@@ -842,7 +842,7 @@ const Contact = memo(() => {
                 </motion.div>
               )}
             </div>
-          )}
+          ) : null}
 
           {/* Standalone Contact Page Layout - Text and Form side by side, Map full width below */}
           {isStandalonePage && (
