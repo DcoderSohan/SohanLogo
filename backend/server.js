@@ -26,22 +26,42 @@ const corsOptions = {
   origin: function (origin, callback) {
     // Get allowed origins from environment or use defaults
     const allowedOriginsEnv = process.env.ALLOWED_ORIGINS;
+    const defaultOrigins = [
+      'http://localhost:5173', 
+      'http://localhost:3000', 
+      'http://localhost:5174',
+      'https://sohan-sarang.onrender.com'
+    ];
+    
     const allowedOrigins = allowedOriginsEnv 
       ? allowedOriginsEnv.split(',').map(url => url.trim())
-      : [
-          'http://localhost:5173', 
-          'http://localhost:3000', 
-          'http://localhost:5174',
-          'https://sohan-sarang.onrender.com'
-        ];
+      : defaultOrigins;
     
-    // Allow requests with no origin (like mobile apps or curl requests)
-    // In production, you might want to be more strict
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+    // Allow requests with no origin (like mobile apps, curl requests, or server-to-server)
+    if (!origin) {
+      return callback(null, true);
     }
+    
+    // Check if origin is in the allowed list
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    
+    // Allow all Vercel domains (*.vercel.app)
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    // Allow Render domains (*.onrender.com) for flexibility
+    if (origin.endsWith('.onrender.com')) {
+      return callback(null, true);
+    }
+    
+    // Log blocked origin for debugging
+    console.log('CORS blocked origin:', origin);
+    console.log('Allowed origins:', allowedOrigins);
+    
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
