@@ -845,7 +845,7 @@ const Contact = memo(() => {
           ) : null}
 
           {/* Standalone Contact Page Layout - Text and Form side by side, Map full width below */}
-          {isStandalonePage && (
+          {isStandalonePage ? (
             <div className="pt-16 sm:pt-20 lg:pt-24 pb-8 sm:pb-12">
               {/* Top Section: Title/Text and Form side by side (desktop), stacked on mobile/tablet */}
               <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start mb-8 sm:mb-12 contact-grid">
@@ -959,7 +959,6 @@ const Contact = memo(() => {
                       />
                     ))}
                   </motion.div>
-                </motion.div>
 
                 {/* Right side - Form */}
                 <motion.div
@@ -1143,7 +1142,7 @@ const Contact = memo(() => {
                 ></iframe>
               </motion.div>
             </div>
-          )}
+          ) : null}
 
         </div>
       </div>
