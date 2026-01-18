@@ -47,31 +47,69 @@ const App = memo(() => {
     }
   }, [showPillars]);
 
-  // Fix mobile scrolling issues - ensure scrolling is always enabled
+  // Fix mobile scrolling issues - ensure scrolling is always enabled (especially Chrome)
   useEffect(() => {
     const enableScrolling = () => {
       // Check if mobile device
-      const isMobile = window.innerWidth <= 767;
+      const isMobile = window.innerWidth <= 767 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
       
       if (isMobile) {
-        // Ensure body and html allow scrolling
-        document.documentElement.style.overflowY = 'auto';
-        document.documentElement.style.touchAction = 'pan-y';
-        document.documentElement.style.webkitOverflowScrolling = 'touch';
-        
-        document.body.style.overflowY = 'auto';
-        document.body.style.touchAction = 'pan-y';
-        document.body.style.webkitOverflowScrolling = 'touch';
-        document.body.style.position = 'relative';
+        // Aggressive fixes for Chrome mobile
+        if (isChrome) {
+          // Force remove any fixed positioning that might block scroll
+          document.documentElement.style.height = 'auto';
+          document.documentElement.style.minHeight = '100vh';
+          document.documentElement.style.overflowY = 'auto';
+          document.documentElement.style.overflowX = 'hidden';
+          document.documentElement.style.touchAction = 'pan-y pan-x';
+          document.documentElement.style.webkitOverflowScrolling = 'touch';
+          document.documentElement.style.position = 'relative';
+          
+          document.body.style.height = 'auto';
+          document.body.style.minHeight = '100vh';
+          document.body.style.overflowY = 'auto';
+          document.body.style.overflowX = 'hidden';
+          document.body.style.touchAction = 'pan-y pan-x';
+          document.body.style.webkitOverflowScrolling = 'touch';
+          document.body.style.position = 'relative';
+          document.body.style.top = '0';
+          document.body.style.left = '0';
+        } else {
+          // Standard mobile fixes
+          document.documentElement.style.overflowY = 'auto';
+          document.documentElement.style.touchAction = 'pan-y';
+          document.documentElement.style.webkitOverflowScrolling = 'touch';
+          
+          document.body.style.overflowY = 'auto';
+          document.body.style.touchAction = 'pan-y';
+          document.body.style.webkitOverflowScrolling = 'touch';
+          document.body.style.position = 'relative';
+        }
         
         // Ensure root allows scrolling
         const root = document.getElementById('root');
         if (root) {
           root.style.overflowY = 'auto';
-          root.style.touchAction = 'pan-y';
+          root.style.overflowX = 'hidden';
+          root.style.touchAction = isChrome ? 'pan-y pan-x' : 'pan-y';
           root.style.webkitOverflowScrolling = 'touch';
           root.style.position = 'relative';
+          root.style.height = 'auto';
+          root.style.minHeight = '100vh';
         }
+        
+        // Remove any elements blocking scroll
+        const allElements = document.querySelectorAll('*');
+        allElements.forEach(el => {
+          const style = window.getComputedStyle(el);
+          if (style.position === 'fixed' && style.top === '0' && style.left === '0' && style.width === '100%' && style.height === '100%') {
+            // This might be a full-screen overlay blocking scroll
+            if (!el.id || (el.id !== 'root' && !el.closest('#root'))) {
+              el.style.touchAction = 'pan-y';
+            }
+          }
+        });
         
         // Add loaded class to body for CSS targeting
         document.body.classList.add('loaded');

@@ -93,13 +93,16 @@ const Contact = memo(() => {
   // Check screen size - only mobile (below 640px) gets different layout
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 640);
+      const width = window.innerWidth;
+      const isMobileDevice = width < 640 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      setIsMobile(isMobileDevice);
     };
 
     checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
+    const resizeHandler = () => checkScreenSize();
+    window.addEventListener("resize", resizeHandler);
 
-    return () => window.removeEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", resizeHandler);
   }, []);
 
   // Trigger animations when sections come into view
@@ -409,42 +412,86 @@ const Contact = memo(() => {
           {!isStandalonePage && (
             <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start py-8 sm:py-12 contact-grid">
               {/* Left side - Title */}
-              <motion.div
-                ref={titleRef}
-                className="text-center sm:text-center md:text-center lg:text-left order-1 px-2 sm:px-4 md:px-6"
-                variants={containerVariants}
-                initial="hidden"
-                animate={titleControls}
-              >
-              <div className="space-y-1 sm:space-y-2">
-                {["Let's", "Work", "Together"].map((word, index) => (
-                  <motion.h1
-                    key={word}
-                    custom={index}
-                    variants={wordVariants}
-                    className={`contact-title-text
-                    text-4xl font-Tourney sm:text-6xl md:text-7xl lg:text-8xl 
-                 text-white leading-tight
-                    ${word === "Let's" ? "hover:text-purple-400" : ""}
-                    ${word === "Work" ? "hover:text-blue-400" : ""}
-                    ${word === "Together" ? "hover:text-green-400" : ""}
-                    transition-colors duration-300 cursor-default
-                  `}
-                  >
-                    {word}
-                  </motion.h1>
-                ))}
-              </div>
+              {isMobile ? (
+                <div
+                  ref={titleRef}
+                  className="text-center sm:text-center md:text-center lg:text-left order-1 px-2 sm:px-4 md:px-6"
+                  style={{
+                    opacity: titleInView ? 1 : 0,
+                    transform: titleInView ? 'translateY(0)' : 'translateY(-20px)',
+                    transition: 'opacity 0.5s ease, transform 0.5s ease',
+                  }}
+                >
+                <div className="space-y-1 sm:space-y-2">
+                  {["Let's", "Work", "Together"].map((word, index) => (
+                    <h1
+                      key={word}
+                      className={`contact-title-text
+                      text-4xl font-Tourney sm:text-6xl md:text-7xl lg:text-8xl 
+                      text-white leading-tight
+                      transition-colors duration-300 cursor-default
+                    `}
+                      style={{
+                        opacity: titleInView ? 1 : 0,
+                        transform: titleInView ? 'translateY(0)' : 'translateY(20px)',
+                        transition: `opacity 0.4s ease ${index * 0.1}s, transform 0.4s ease ${index * 0.1}s`,
+                      }}
+                    >
+                      {word}
+                    </h1>
+                  ))}
+                </div>
+              ) : (
+                <motion.div
+                  ref={titleRef}
+                  className="text-center sm:text-center md:text-center lg:text-left order-1 px-2 sm:px-4 md:px-6"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate={titleControls}
+                >
+                <div className="space-y-1 sm:space-y-2">
+                  {["Let's", "Work", "Together"].map((word, index) => (
+                    <motion.h1
+                      key={word}
+                      custom={index}
+                      variants={wordVariants}
+                      className={`contact-title-text
+                      text-4xl font-Tourney sm:text-6xl md:text-7xl lg:text-8xl 
+                      text-white leading-tight
+                      ${word === "Let's" ? "hover:text-purple-400" : ""}
+                      ${word === "Work" ? "hover:text-blue-400" : ""}
+                      ${word === "Together" ? "hover:text-green-400" : ""}
+                      transition-colors duration-300 cursor-default
+                    `}
+                    >
+                      {word}
+                    </motion.h1>
+                  ))}
+                </div>
+              )}
 
               {pageSettings.description && (
-                <motion.div
-                  className="mt-3 sm:mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-md mx-auto sm:mx-auto md:mx-auto lg:mx-0"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 1.2, duration: 0.8 }}
-                >
-                  {pageSettings.description}
-                </motion.div>
+                isMobile ? (
+                  <div
+                    className="mt-3 sm:mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-md mx-auto sm:mx-auto md:mx-auto lg:mx-0"
+                    style={{
+                      opacity: titleInView ? 1 : 0,
+                      transform: titleInView ? 'translateY(0)' : 'translateY(10px)',
+                      transition: 'opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s',
+                    }}
+                  >
+                    {pageSettings.description}
+                  </div>
+                ) : (
+                  <motion.div
+                    className="mt-3 sm:mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-md mx-auto sm:mx-auto md:mx-auto lg:mx-0"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.2, duration: 0.8 }}
+                  >
+                    {pageSettings.description}
+                  </motion.div>
+                )
               )}
 
               {/* Mobile-only decorative elements - simplified */}
@@ -477,34 +524,59 @@ const Contact = memo(() => {
               </motion.div>
 
               {/* Right side - Form */}
-              <motion.div
-                ref={formRef}
-                variants={formVariants}
-                initial="hidden"
-                animate={formControls}
-                className="relative order-2 px-2 sm:px-4"
-              >
-              <motion.div
-                className="backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-gray-700/30 shadow-2xl bg-gray-900/20 contact-form-container"
-                whileHover={{
-                  borderColor: "rgba(168, 85, 247, 0.3)",
-                  transition: { duration: 0.3 },
-                }}
-              >
+              {isMobile ? (
+                <div
+                  ref={formRef}
+                  className="relative order-2 px-2 sm:px-4"
+                  style={{
+                    opacity: formInView ? 1 : 0,
+                    transform: formInView ? 'translateY(0)' : 'translateY(20px)',
+                    transition: 'opacity 0.4s ease, transform 0.4s ease',
+                  }}
+                >
+                <div className="backdrop-blur-sm rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-gray-700/30 shadow-xl bg-gray-900/30 contact-form-container">
+              ) : (
+                <motion.div
+                  ref={formRef}
+                  variants={formVariants}
+                  initial="hidden"
+                  animate={formControls}
+                  className="relative order-2 px-2 sm:px-4"
+                >
+                <motion.div
+                  className="backdrop-blur-xl rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-gray-700/30 shadow-2xl bg-gray-900/20 contact-form-container"
+                  whileHover={{
+                    borderColor: "rgba(168, 85, 247, 0.3)",
+                    transition: { duration: 0.3 },
+                  }}
+                >
+              )}
                 {/* Notification */}
                 {notification && (
-                  <motion.div
-                    className={`mb-4 text-center font-semibold text-sm sm:text-base px-4 py-3 rounded-lg ${
-                      notificationType === "success"
-                        ? "text-green-400 bg-green-400/10 border border-green-400/20"
-                        : "text-red-400 bg-red-400/10 border border-red-400/20"
-                    }`}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                  >
-                    {notification}
-                  </motion.div>
+                  isMobile ? (
+                    <div
+                      className={`mb-4 text-center font-semibold text-sm sm:text-base px-4 py-3 rounded-lg ${
+                        notificationType === "success"
+                          ? "text-green-400 bg-green-400/10 border border-green-400/20"
+                          : "text-red-400 bg-red-400/10 border border-red-400/20"
+                      }`}
+                    >
+                      {notification}
+                    </div>
+                  ) : (
+                    <motion.div
+                      className={`mb-4 text-center font-semibold text-sm sm:text-base px-4 py-3 rounded-lg ${
+                        notificationType === "success"
+                          ? "text-green-400 bg-green-400/10 border border-green-400/20"
+                          : "text-red-400 bg-red-400/10 border border-red-400/20"
+                      }`}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                    >
+                      {notification}
+                    </motion.div>
+                  )
                 )}
 
                 <div className="space-y-4 sm:space-y-6">
@@ -528,13 +600,19 @@ const Contact = memo(() => {
                       };
                       const color = colorMap[field.type] || "purple";
 
-                      return (
+                      return isMobile ? (
+                        <div
+                          key={field.name}
+                          className="relative group"
+                        >
+                      ) : (
                         <motion.div
                           key={field.name}
                           custom={index}
                           variants={inputVariants}
                           className="relative group"
                         >
+                      );
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
                             <Icon
                               className={`h-4 w-4 sm:h-5 sm:w-5 text-gray-400 group-focus-within:text-${color}-400 transition-colors duration-300`}
@@ -555,80 +633,119 @@ const Contact = memo(() => {
                           `}
                             required={field.required}
                           />
-                        </motion.div>
+                        {isMobile ? </div> : </motion.div>}
                       );
                     })}
 
                   {/* Textarea fields */}
                   {formFields && formFields.length > 0 && formFields
                     .filter(field => field && field.type === "textarea")
-                    .map((field, index) => (
-                      <motion.div
-                        key={field.name}
-                        custom={formFields.filter(f => f.type !== "textarea").length + index}
-                        variants={inputVariants}
-                        className="relative group"
-                      >
-                        <div className="absolute top-3 sm:top-4 left-0 pl-3 flex items-center pointer-events-none z-10">
-                          <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 group-focus-within:text-pink-400 transition-colors duration-300" />
+                    .map((field, index) => {
+                      const content = (
+                        <>
+                          <div className="absolute top-3 sm:top-4 left-0 pl-3 flex items-center pointer-events-none z-10">
+                            <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400 group-focus-within:text-pink-400 transition-colors duration-300" />
+                          </div>
+                          <textarea
+                            name={field.name}
+                            value={formData[field.name] || ""}
+                            onChange={handleInputChange}
+                            placeholder={field.placeholder || field.label}
+                            rows={isMobile ? "3" : "4"}
+                            className="w-full pl-8 sm:pl-10 pr-4 py-3 sm:py-2 bg-gray-900/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-400/20 transition-all duration-300 backdrop-blur-sm resize-none text-sm sm:text-base contact-textarea"
+                            required={field.required}
+                          />
+                        </>
+                      );
+
+                      return isMobile ? (
+                        <div
+                          key={field.name}
+                          className="relative group"
+                        >
+                          {content}
                         </div>
-                        <textarea
-                          name={field.name}
-                          value={formData[field.name] || ""}
-                          onChange={handleInputChange}
-                          placeholder={field.placeholder || field.label}
-                          rows={isMobile ? "3" : "4"}
-                          className="w-full pl-8 sm:pl-10 pr-4 py-3 sm:py-2 bg-gray-900/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:border-pink-400 focus:outline-none focus:ring-2 focus:ring-pink-400/20 transition-all duration-300 backdrop-blur-sm resize-none text-sm sm:text-base contact-textarea"
-                          required={field.required}
-                        />
-                      </motion.div>
-                    ))}
+                      ) : (
+                        <motion.div
+                          key={field.name}
+                          custom={formFields.filter(f => f.type !== "textarea").length + index}
+                          variants={inputVariants}
+                          className="relative group"
+                        >
+                          {content}
+                        </motion.div>
+                      );
+                    })}
 
                   {/* Submit Button */}
-                  <motion.div className="flex justify-center pt-2 sm:pt-4">
-                    <motion.button
-                      type="button"
-                      onClick={handleSubmit}
-                      variants={buttonVariants}
-                      whileHover="hover"
-                      whileTap="tap"
-                      disabled={isSubmitting}
-                      className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-gradient-to-r from-purple-500 via-purple-900 to-blue-500 rounded-full text-white font-semibold shadow-2xl overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500"
-                        initial={{ scale: 0 }}
-                        whileHover={{ scale: 1 }}
-                        transition={{ duration: 0.3 }}
-                      />
-
-                      {isSubmitting ? (
+                  {isMobile ? (
+                    <div className="flex justify-center pt-2 sm:pt-4">
+                      <button
+                        type="button"
+                        onClick={handleSubmit}
+                        disabled={isSubmitting}
+                        className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-gradient-to-r from-purple-500 via-purple-900 to-blue-500 rounded-full text-white font-semibold shadow-xl overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 transition-transform"
+                      >
+                        {isSubmitting ? (
+                          <div className="relative z-10 animate-spin">
+                            <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full" />
+                          </div>
+                        ) : (
+                          <Send className="h-5 w-5 sm:h-6 sm:w-6 relative z-10" />
+                        )}
+                      </button>
+                    </div>
+                  ) : (
+                    <motion.div className="flex justify-center pt-2 sm:pt-4">
+                      <motion.button
+                        type="button"
+                        onClick={handleSubmit}
+                        variants={buttonVariants}
+                        whileHover="hover"
+                        whileTap="tap"
+                        disabled={isSubmitting}
+                        className="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-gradient-to-r from-purple-500 via-purple-900 to-blue-500 rounded-full text-white font-semibold shadow-2xl overflow-hidden group disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
                         <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            ease: "linear",
-                          }}
-                          className="relative z-10"
-                        >
-                          <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full" />
-                        </motion.div>
-                      ) : (
-                        <Send className="h-5 w-5 sm:h-6 sm:w-6 relative z-10" />
-                      )}
+                          className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500"
+                          initial={{ scale: 0 }}
+                          whileHover={{ scale: 1 }}
+                          transition={{ duration: 0.3 }}
+                        />
 
-                      <motion.div
-                        className="absolute inset-0 bg-white/20 rounded-full"
-                        initial={{ scale: 0, opacity: 0 }}
-                        whileTap={{ scale: 1, opacity: 1 }}
-                        transition={{ duration: 0.1 }}
-                      />
-                    </motion.button>
-                  </motion.div>
+                        {isSubmitting ? (
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{
+                              duration: 1,
+                              repeat: Infinity,
+                              ease: "linear",
+                            }}
+                            className="relative z-10"
+                          >
+                            <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-white border-t-transparent rounded-full" />
+                          </motion.div>
+                        ) : (
+                          <Send className="h-5 w-5 sm:h-6 sm:w-6 relative z-10" />
+                        )}
+
+                        <motion.div
+                          className="absolute inset-0 bg-white/20 rounded-full"
+                          initial={{ scale: 0, opacity: 0 }}
+                          whileTap={{ scale: 1, opacity: 1 }}
+                          transition={{ duration: 0.1 }}
+                        />
+                      </motion.button>
+                    </motion.div>
+                  )}
                 </div>
+                {isMobile ? (
+                  </div>
+                </div>
+              ) : (
+                </motion.div>
               </motion.div>
-              </motion.div>
+              )}
             </div>
           )}
 
@@ -638,42 +755,88 @@ const Contact = memo(() => {
               {/* Top Section: Title/Text and Form side by side (desktop), stacked on mobile/tablet */}
               <div className="grid lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start mb-8 sm:mb-12 contact-grid">
                 {/* Left side - Title/Text */}
-                <motion.div
-                  ref={titleRef}
-                  className="text-center sm:text-center md:text-center lg:text-left px-2 sm:px-4 md:px-6"
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate={titleControls}
-                >
-                  <div className="space-y-1 sm:space-y-2">
-                    {["Let's", "Work", "Together"].map((word, index) => (
-                      <motion.h1
-                        key={word}
-                        custom={index}
-                        variants={wordVariants}
-                    className={`contact-title-text
-                    text-4xl font-Tourney sm:text-6xl md:text-7xl lg:text-8xl 
-                        text-white leading-tight
-                        ${word === "Let's" ? "hover:text-purple-400" : ""}
-                        ${word === "Work" ? "hover:text-blue-400" : ""}
-                        ${word === "Together" ? "hover:text-green-400" : ""}
-                        transition-colors duration-300 cursor-default
-                      `}
-                      >
-                        {word}
-                      </motion.h1>
-                    ))}
+                {isMobile ? (
+                  <div
+                    ref={titleRef}
+                    className="text-center sm:text-center md:text-center lg:text-left px-2 sm:px-4 md:px-6"
+                    style={{
+                      opacity: titleInView ? 1 : 0,
+                      transform: titleInView ? 'translateY(0)' : 'translateY(-20px)',
+                      transition: 'opacity 0.5s ease, transform 0.5s ease',
+                    }}
+                  >
+                    <div className="space-y-1 sm:space-y-2">
+                      {["Let's", "Work", "Together"].map((word, index) => (
+                        <h1
+                          key={word}
+                          className={`contact-title-text
+                          text-4xl font-Tourney sm:text-6xl md:text-7xl lg:text-8xl 
+                          text-white leading-tight
+                          transition-colors duration-300 cursor-default
+                        `}
+                          style={{
+                            opacity: titleInView ? 1 : 0,
+                            transform: titleInView ? 'translateY(0)' : 'translateY(20px)',
+                            transition: `opacity 0.4s ease ${index * 0.1}s, transform 0.4s ease ${index * 0.1}s`,
+                          }}
+                        >
+                          {word}
+                        </h1>
+                      ))}
+                    </div>
                   </div>
+                ) : (
+                  <motion.div
+                    ref={titleRef}
+                    className="text-center sm:text-center md:text-center lg:text-left px-2 sm:px-4 md:px-6"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate={titleControls}
+                  >
+                    <div className="space-y-1 sm:space-y-2">
+                      {["Let's", "Work", "Together"].map((word, index) => (
+                        <motion.h1
+                          key={word}
+                          custom={index}
+                          variants={wordVariants}
+                          className={`contact-title-text
+                          text-4xl font-Tourney sm:text-6xl md:text-7xl lg:text-8xl 
+                          text-white leading-tight
+                          ${word === "Let's" ? "hover:text-purple-400" : ""}
+                          ${word === "Work" ? "hover:text-blue-400" : ""}
+                          ${word === "Together" ? "hover:text-green-400" : ""}
+                          transition-colors duration-300 cursor-default
+                        `}
+                        >
+                          {word}
+                        </motion.h1>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
 
                   {pageSettings.description && (
-                    <motion.div
-                      className="mt-3 sm:mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-md mx-auto sm:mx-auto md:mx-auto lg:mx-0"
-                      initial={{ opacity: 0, y: 30 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.2, duration: 0.8 }}
-                    >
-                      {pageSettings.description}
-                    </motion.div>
+                    isMobile ? (
+                      <div
+                        className="mt-3 sm:mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-md mx-auto sm:mx-auto md:mx-auto lg:mx-0"
+                        style={{
+                          opacity: titleInView ? 1 : 0,
+                          transform: titleInView ? 'translateY(0)' : 'translateY(10px)',
+                          transition: 'opacity 0.4s ease 0.3s, transform 0.4s ease 0.3s',
+                        }}
+                      >
+                        {pageSettings.description}
+                      </div>
+                    ) : (
+                      <motion.div
+                        className="mt-3 sm:mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-md mx-auto sm:mx-auto md:mx-auto lg:mx-0"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.2, duration: 0.8 }}
+                      >
+                        {pageSettings.description}
+                      </motion.div>
+                    )
                   )}
 
                   {/* Decorative elements - optimized */}

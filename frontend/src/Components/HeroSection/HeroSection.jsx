@@ -302,14 +302,15 @@ const HeroSection = memo(({ heroData }) => {
           }
         }
         
-        /* Prevent scrollbars and layout shifts */
+        /* Prevent scrollbars and layout shifts - but allow vertical scrolling */
         .hero-bg {
           overflow: hidden !important;
           position: relative !important;
           contain: layout style paint !important;
           isolation: isolate !important;
-          touch-action: none !important;
-          overscroll-behavior: none !important;
+          touch-action: pan-y !important; /* Allow vertical scroll */
+          overscroll-behavior-y: auto !important;
+          overscroll-behavior-x: none !important;
           -webkit-overflow-scrolling: touch;
           z-index: 1 !important;
           width: 100% !important;
@@ -432,7 +433,7 @@ const HeroSection = memo(({ heroData }) => {
             -webkit-animation-play-state: running !important;
           }
           
-          /* Prevent any scrolling or movement */
+          /* Allow vertical scrolling on mobile - only prevent horizontal */
           .hero-bg {
             position: relative !important;
             top: 0 !important;
@@ -441,9 +442,9 @@ const HeroSection = memo(({ heroData }) => {
             max-width: 100vw !important;
             height: 100vh !important;
             overflow: hidden !important;
-            touch-action: none !important;
-            overscroll-behavior: none !important;
-            -webkit-overflow-scrolling: none !important;
+            touch-action: pan-y !important; /* Allow vertical scroll, block horizontal */
+            overscroll-behavior-y: auto !important;
+            overscroll-behavior-x: none !important;
             z-index: 1 !important;
             isolation: isolate !important;
             contain: layout style paint !important;
@@ -470,7 +471,7 @@ const HeroSection = memo(({ heroData }) => {
         @media (min-width: 768px) and (max-width: 1023px) {
           .hero-bg {
             position: relative !important;
-            touch-action: none !important;
+            touch-action: pan-y !important; /* Allow vertical scroll */
           }
           
           .rotating-circle {
