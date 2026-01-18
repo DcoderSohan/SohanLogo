@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "serve -s dist --listen $PORT"
+    "start": "serve -s dist -l $PORT"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
