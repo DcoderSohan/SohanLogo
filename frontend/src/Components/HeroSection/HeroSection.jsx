@@ -177,15 +177,13 @@ const HeroSection = memo(({ heroData }) => {
       </div>
 
       {/* Rotating circle with Hire Me button - Fixed outside content container */}
-      <div className="hire-me-circle fixed bottom-20 right-4 sm:bottom-24 sm:right-6 md:absolute md:bottom-8 md:right-8 flex items-center justify-center w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 z-20">
+      <div className="hire-me-circle fixed bottom-20 right-4 sm:bottom-24 sm:right-6 md:absolute md:bottom-8 md:right-8 flex items-center justify-center w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 z-30">
         <div
           className="relative inline-block w-full h-full rotating-circle"
           style={{ 
             willChange: "transform",
-            transform: "translateZ(0)",
             backfaceVisibility: "hidden",
             WebkitBackfaceVisibility: "hidden",
-            perspective: "1000px",
           }}
         >
           {letters.map((char, i) => (
@@ -246,15 +244,12 @@ const HeroSection = memo(({ heroData }) => {
         }
         
         .rotating-circle {
-          animation: ${reverse ? 'rotate-reverse' : 'rotate'} ${duration}s linear infinite;
-          transform-origin: center center;
-          transform: translateZ(0);
-          -webkit-transform: translateZ(0);
+          animation: ${reverse ? 'rotate-reverse' : 'rotate'} ${duration}s linear infinite !important;
+          transform-origin: center center !important;
           will-change: transform;
           backface-visibility: hidden;
           -webkit-backface-visibility: hidden;
-          perspective: 1000px;
-          -webkit-perspective: 1000px;
+          -webkit-transform: translateZ(0);
         }
         
         /* Responsive background images */
@@ -426,11 +421,12 @@ const HeroSection = memo(({ heroData }) => {
           }
           
           .rotating-circle {
-            transform: translateZ(0) !important;
-            -webkit-transform: translateZ(0) !important;
+            animation: ${reverse ? 'rotate-reverse' : 'rotate'} ${duration}s linear infinite !important;
             animation-timing-function: linear !important;
             animation-play-state: running !important;
             -webkit-animation-play-state: running !important;
+            transform-origin: center center !important;
+            -webkit-transform: translateZ(0);
           }
           
           /* Allow vertical scrolling on mobile - only prevent horizontal */
@@ -475,8 +471,10 @@ const HeroSection = memo(({ heroData }) => {
           }
           
           .rotating-circle {
+            animation: ${reverse ? 'rotate-reverse' : 'rotate'} ${duration}s linear infinite !important;
             animation-timing-function: linear !important;
             -webkit-animation-timing-function: linear !important;
+            transform-origin: center center !important;
           }
         }
       `}</style>

@@ -146,7 +146,7 @@ const Navbar = ({ className = "" }) => {
 
   return (
     <>
-      <header className="fixed font-Audiowide top-4 z-20 w-[95%] sm:w-[85%] md:w-[70%] left-1/2 -translate-x-1/2 mx-auto rounded-lg p-2 sm:p-4 flex justify-between items-center gap-2 sm:gap-4 backdrop-blur-md bg-black/30 border border-white/10 shadow-lg">
+      <header className="fixed font-Audiowide top-4 z-50 w-[95%] sm:w-[85%] md:w-[70%] left-1/2 -translate-x-1/2 mx-auto rounded-lg p-2 sm:p-4 flex justify-between items-center gap-2 sm:gap-4 backdrop-blur-md bg-black/30 border border-white/10 shadow-lg">
         <div className="text-2xl text-white flex-shrink-0">
           <Link to="/">
             <img
