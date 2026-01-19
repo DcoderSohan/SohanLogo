@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo, useCallback, memo } from "react";
-import HeroSection from "../Components/HeroSection/HeroSection";
 import About from "../Components/About/About";
 import Skills from "../Components/Skills/Skills";
 import Stats from "../Components/Stats/Stats";
@@ -69,13 +68,11 @@ const Home = memo(() => {
 
   const stats = useMemo(() => homeData?.stats || [], [homeData?.stats]);
   const gitUserName = useMemo(() => homeData?.gitgraph?.userName ?? "DcoderSohan", [homeData?.gitgraph?.userName]);
-  const heroData = useMemo(() => homeData?.hero, [homeData?.hero]);
   const quotes = useMemo(() => homeData?.quotes || [], [homeData?.quotes]);
   const skillsData = useMemo(() => homeData?.skills, [homeData?.skills]);
 
   return (
     <div>
-      <HeroSection heroData={heroData} />
       <div className="-mt-8">
         <Quote quotes={quotes} />
       </div>

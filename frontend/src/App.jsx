@@ -1,6 +1,5 @@
 import { useState, useEffect, lazy, Suspense, memo } from "react";
 import "./App.css";
-import Navbar from "./Components/Navbar/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Footer from "./Components/Footer/Footer";
 import ErrorBoundary from "./Components/ErrorBoundary";
@@ -11,13 +10,6 @@ const Projectssection = lazy(() => import("./Pages/Projectssection"));
 const Aboutsection = lazy(() => import("./Pages/Aboutsection"));
 const ProjectDetail = lazy(() => import("./Pages/ProjectDetail"));
 const Contact = lazy(() => import("./Components/Contact/Contact"));
-
-// Loading component
-const PageLoader = () => (
-  <div className="min-h-screen bg-white flex items-center justify-center">
-    <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-  </div>
-);
 
 
 const App = memo(() => {
@@ -136,8 +128,7 @@ const App = memo(() => {
     <ErrorBoundary>
       <div className="bg-[#080808] relative min-h-screen">
         <Router>
-          <Navbar />
-          <Suspense fallback={<PageLoader />}>
+          <Suspense fallback={<div className="min-h-screen bg-[#080808] flex items-center justify-center"><div className="text-white">Loading...</div></div>}>
             <Routes>
               <Route
                 path="/"
