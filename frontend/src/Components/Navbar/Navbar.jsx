@@ -16,6 +16,21 @@ const Navbar = ({ className = "" }) => {
   const linkRefs = useRef([]);
 
   useEffect(() => {
+    const toggle = () => {
+      const opening = tl.current.reversed();
+      opening ? tl.current.play() : tl.current.reverse();
+
+      if (opening) {
+        document.body.style.overflow = "hidden";
+        document.documentElement.style.overflow = "hidden"; // Also lock html tag
+      } else {
+        document.body.style.overflow = "auto";
+        document.documentElement.style.overflow = "auto";
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     // The SplitText/GSAP setup logic as a function
     const setupSplitText = () => {
       // Initial overlay animation timeline
@@ -146,7 +161,15 @@ const Navbar = ({ className = "" }) => {
 
   return (
     <>
-      <header className="fixed font-Audiowide top-2 sm:top-4 z-50 left-1/2 -translate-x-1/2 mx-auto rounded-lg backdrop-blur-md bg-black/30 border border-white/10 shadow-lg" style={{ width: 'calc(100% - 0.5rem)', maxWidth: 'calc(100vw - 0.5rem)', padding: '0.375rem 0.5rem' }}>
+      <header
+        className="fixed font-Audiowide top-2 sm:top-4 z-50 left-1/2 -translate-x-1/2 mx-auto rounded-lg backdrop-blur-md bg-black/30 border border-white/10 shadow-lg"
+        style={{
+          width: '95%', // Use percentage for better reliability
+          maxWidth: '1200px',
+          padding: '0.375rem 0.5rem',
+          boxSizing: 'border-box' // Ensure padding doesn't add to width
+        }}
+      >
         <div className="flex justify-between items-center gap-1 sm:gap-2 md:gap-4 w-full">
           <div className="text-2xl text-white flex-shrink-0 min-w-0">
             <Link to="/" className="block">
@@ -171,13 +194,15 @@ const Navbar = ({ className = "" }) => {
 
       <div
         ref={overlay}
-        className="fixed -top-8 left-0 right-0 bottom-0 z-50 bg-black flex flex-col p-8 md:p-16"
-        style={{ 
+        className="fixed inset-0 z-50 bg-black flex flex-col p-6 md:p-16" // inset-0 sets top/right/bottom/left to 0
+        style={{
           margin: 0,
           backgroundImage: 'url("./Navbg.webp")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundRepeat: 'no-repeat',
+          overflowY: 'auto', // Allow scrolling if menu items are too tall for small phones
+          touchAction: 'none' // Prevents "ghost" scrolling behind the menu
         }}
       >
         <button
@@ -231,12 +256,12 @@ const Navbar = ({ className = "" }) => {
 
         <div
           ref={logo}
-          className="absolute bottom-10 right-6 md:bottom-10 md:right-10 text-white text-4xl md:text-6xl font-bold"
+          className="absolute bottom-6 right-6 md:bottom-10 md:right-10 text-white"
         >
           <img
             src="./mylogo.webp"
             alt="Logo"
-            className="w-[200px] md:w-[400px]"
+            className="w-[120px] sm:w-[200px] md:w-[400px] h-auto" // Added smaller width for mobile
             loading="lazy"
             decoding="async"
           />
