@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { SplitText } from "gsap/SplitText";
 import { Link } from "react-router-dom";
-import { Target } from "lucide-react";
+import "./Navbar.css";
 
 gsap.registerPlugin(SplitText);
 
@@ -14,21 +14,24 @@ const Navbar = ({ className = "" }) => {
   const logo = useRef();
   const tl = useRef();
   const linkRefs = useRef([]);
+  const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const toggle = () => {
-      const opening = tl.current.reversed();
+  const toggle = () => {
+    const opening = !isOpen;
+    setIsOpen(opening);
+    
+    if (opening) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+      document.documentElement.style.overflow = "auto";
+    }
+    
+    if (tl.current) {
       opening ? tl.current.play() : tl.current.reverse();
-
-      if (opening) {
-        document.body.style.overflow = "hidden";
-        document.documentElement.style.overflow = "hidden"; // Also lock html tag
-      } else {
-        document.body.style.overflow = "auto";
-        document.documentElement.style.overflow = "auto";
-      }
-    };
-  }, []);
+    }
+  };
 
   useEffect(() => {
     // The SplitText/GSAP setup logic as a function
@@ -52,7 +55,7 @@ const Navbar = ({ className = "" }) => {
         .to(logo.current, { autoAlpha: 1, y: 0, duration: 0.3 }, "-=0.2")
         .to(closeBtn.current, { autoAlpha: 1, y: 0, duration: 0.3 }, "-=0.2");
 
-      // Setup hover animations for each link individually
+      // Setup hover animations for each link individually (desktop only)
       linkRefs.current.forEach((linkEl) => {
         if (linkEl) {
           const split = new SplitText(linkEl, { type: "chars" });
@@ -79,32 +82,35 @@ const Navbar = ({ className = "" }) => {
 
           // Set up hover animations - text always visible, just animates on hover
           const hoverIn = () => {
-            gsap.fromTo(
-              chars,
-              { y: 20, autoAlpha: 0 },
-              {
-                y: 0,
-                autoAlpha: 1,
-                stagger: 0.03,
-                ease: "power2.out",
-                duration: 0.4,
-              }
-            );
-            // Animate underline in and then out automatically
-            gsap
-              .timeline()
-              .to(underline, {
-                scaleX: 1,
-                duration: 0.4,
-                ease: "power2.out",
-                delay: 0.2,
-              })
-              .to(underline, {
-                scaleX: 0,
-                duration: 0.3,
-                ease: "power2.in",
-                delay: 0.1,
-              });
+            // Only on desktop (hover capable devices)
+            if (window.matchMedia("(hover: hover)").matches) {
+              gsap.fromTo(
+                chars,
+                { y: 20, autoAlpha: 0 },
+                {
+                  y: 0,
+                  autoAlpha: 1,
+                  stagger: 0.03,
+                  ease: "power2.out",
+                  duration: 0.4,
+                }
+              );
+              // Animate underline in and then out automatically
+              gsap
+                .timeline()
+                .to(underline, {
+                  scaleX: 1,
+                  duration: 0.4,
+                  ease: "power2.out",
+                  delay: 0.2,
+                })
+                .to(underline, {
+                  scaleX: 0,
+                  duration: 0.3,
+                  ease: "power2.in",
+                  delay: 0.1,
+                });
+            }
           };
 
           const hoverOut = () => {
@@ -147,12 +153,6 @@ const Navbar = ({ className = "" }) => {
     };
   }, []);
 
-  const toggle = () => {
-    const opening = tl.current.reversed();
-    opening ? tl.current.play() : tl.current.reverse();
-    document.body.style.overflow = opening ? "hidden" : "auto";
-  };
-
   const links = ["Home", "About", "Projects", "Contact"];
   const socialsData = [
     { name: "GitHub", href: "https://github.com/DcoderSohan" },
@@ -161,62 +161,47 @@ const Navbar = ({ className = "" }) => {
 
   return (
     <>
-      <header
-        className="fixed font-Audiowide top-2 sm:top-4 z-50 left-1/2 -translate-x-1/2 mx-auto rounded-lg backdrop-blur-md bg-black/30 border border-white/10 shadow-lg"
-        style={{
-          width: '95%', // Use percentage for better reliability
-          maxWidth: '1200px',
-          padding: '0.375rem 0.5rem',
-          boxSizing: 'border-box' // Ensure padding doesn't add to width
-        }}
-      >
-        <div className="flex justify-between items-center gap-1 sm:gap-2 md:gap-4 w-full">
-          <div className="text-2xl text-white flex-shrink-0 min-w-0">
-            <Link to="/" className="block">
-              <img
-                src="./mylogo.webp"
-                alt="Logo"
-                width={90}
-                className="w-[60px] sm:w-[90px] md:w-[150px] h-auto max-w-full"
-                loading="eager"
-                decoding="async"
-              />
-            </Link>
-          </div>
+      {/* Mobile-First Navbar Header */}
+      <header className="navbar-header">
+        <div className="navbar-container">
+          <Link to="/" className="navbar-logo">
+            <img
+              src="./mylogo.webp"
+              alt="Logo"
+              className="navbar-logo-img"
+              loading="eager"
+              decoding="async"
+            />
+          </Link>
           <button
             onClick={toggle}
-            className="text-xs sm:text-sm md:text-lg font-medium text-white hover:opacity-80 transition-opacity px-2 py-1 sm:px-3 sm:py-1 md:px-4 md:py-2 flex-shrink-0 whitespace-nowrap"
+            className="navbar-menu-btn"
+            aria-label="Toggle menu"
           >
             Menu
           </button>
         </div>
       </header>
 
+      {/* Mobile Menu Overlay */}
       <div
         ref={overlay}
-        className="fixed inset-0 z-50 bg-black flex flex-col p-6 md:p-16" // inset-0 sets top/right/bottom/left to 0
+        className="navbar-overlay"
         style={{
-          margin: 0,
-          backgroundImage: 'url("./Navbg.webp")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          overflowY: 'auto', // Allow scrolling if menu items are too tall for small phones
-          touchAction: 'none' // Prevents "ghost" scrolling behind the menu
+          display: isOpen ? 'flex' : 'none',
         }}
       >
         <button
           ref={closeBtn}
           onClick={toggle}
-          className="absolute font-Audiowide font-normal top-6 right-6 md:top-8 md:right-8 text-white text-xl z-10 p-2 hover:opacity-80 transition-opacity touch-manipulation"
-          style={{ minHeight: 44, minWidth: 44 }}
+          className="navbar-close-btn"
+          aria-label="Close menu"
         >
           Close
         </button>
 
-        <nav ref={nav} className="flex font-Audiowide flex-col pt-20 space-y-6 md:space-y-10">
+        <nav ref={nav} className="navbar-nav">
           {links.map((l, index) => {
-            // Map link names to route paths
             let path = "/";
             if (l === "About") path = "/about";
             else if (l === "Projects") path = "/projects";
@@ -229,7 +214,7 @@ const Navbar = ({ className = "" }) => {
                 ref={(el) => (linkRefs.current[index] = el)}
                 to={path}
                 onClick={toggle}
-                className="font-Audiowide font-normal text-white text-3xl md:text-5xl relative inline-block cursor-pointer"
+                className="navbar-link"
               >
                 {l}
               </Link>
@@ -237,15 +222,12 @@ const Navbar = ({ className = "" }) => {
           })}
         </nav>
 
-        <div
-          ref={socials}
-          className="absolute font-Audiowide font-normal bottom-32 right-6 md:right-8 flex flex-col items-end space-y-2"
-        >
+        <div ref={socials} className="navbar-socials">
           {socialsData.map((s) => (
             <a
               key={s.name}
               href={s.href}
-              className="text-white text-lg hover:opacity-80 transition-opacity"
+              className="navbar-social-link"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -254,14 +236,11 @@ const Navbar = ({ className = "" }) => {
           ))}
         </div>
 
-        <div
-          ref={logo}
-          className="absolute bottom-6 right-6 md:bottom-10 md:right-10 text-white"
-        >
+        <div ref={logo} className="navbar-overlay-logo">
           <img
             src="./mylogo.webp"
             alt="Logo"
-            className="w-[120px] sm:w-[200px] md:w-[400px] h-auto" // Added smaller width for mobile
+            className="navbar-overlay-logo-img"
             loading="lazy"
             decoding="async"
           />
