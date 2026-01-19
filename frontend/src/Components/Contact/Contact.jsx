@@ -329,18 +329,18 @@ const Contact = memo(() => {
                     </motion.h1>
                   ))}
                 </div>
-              </motion.div>
 
-              {pageSettings.description && (
-                <motion.div
-                  className="mt-4 md:mt-6 text-gray-300 text-sm md:text-base leading-relaxed max-w-md mx-auto md:mx-0"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3, duration: 0.4 }}
-                >
-                  {pageSettings.description}
-                </motion.div>
-              )}
+                {pageSettings.description && (
+                  <motion.div
+                    className="mt-4 md:mt-6 text-gray-300 text-sm md:text-base leading-relaxed max-w-md mx-auto md:mx-0"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3, duration: 0.4 }}
+                  >
+                    {pageSettings.description}
+                  </motion.div>
+                )}
+              </motion.div>
 
               {/* Right side - Form */}
               <motion.div
@@ -461,6 +461,7 @@ const Contact = memo(() => {
                       )}
                     </motion.button>
                   </motion.div>
+                  </div>
                 </div>
               </motion.div>
             </div>
