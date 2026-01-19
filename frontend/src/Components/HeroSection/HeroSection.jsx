@@ -2,11 +2,6 @@ import React, { useState, useEffect, useMemo, useCallback, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const HeroSection = memo(({ heroData }) => {
-  const text = useMemo(() => "Hire Me • Hire Me • Hire Me •", []);
-  const radius = 4;
-  const duration = 12;
-  const reverse = false;
-
   const name = heroData?.name || "Sohan Sarang";
   const title = heroData?.title || "WEB";
   const subtitle = heroData?.subtitle || "DEVELOPER";
@@ -26,16 +21,6 @@ const HeroSection = memo(({ heroData }) => {
     }, 4000);
     return () => clearInterval(interval);
   }, [subtitle, subtitleAlt]);
-
-  const letters = useMemo(() => [...text, " "], [text]);
-  const angleStep = useMemo(() => 360 / letters.length, [letters.length]);
-
-  const onHireClick = useCallback(() => {
-    const contactEl = document.getElementById("contact");
-    if (contactEl) {
-      contactEl.scrollIntoView({ behavior: "smooth" });
-    }
-  }, []);
 
   useEffect(() => {
     if (document.fonts) {
@@ -177,45 +162,6 @@ const HeroSection = memo(({ heroData }) => {
         </div>
       </div>
 
-      {/* Rotating circle with Hire Me button - Fixed outside content container */}
-      <div className="hire-me-circle fixed bottom-16 right-3 sm:bottom-20 sm:right-4 md:absolute md:bottom-8 md:right-8 flex items-center justify-center w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40 lg:w-48 lg:h-48 z-30">
-        <div
-          className="relative inline-block w-full h-full rotating-circle"
-          style={{ 
-            willChange: "transform",
-            backfaceVisibility: "hidden",
-            WebkitBackfaceVisibility: "hidden",
-          }}
-        >
-          {letters.map((char, i) => (
-            <span
-              key={i}
-              className="absolute left-1/2 top-1/2 text-white font-bold text-[10px] sm:text-xs md:text-sm"
-              style={{
-                transform: `
-                  translate3d(-50%, -50%, 0)
-                  rotate(${i * angleStep}deg)
-                  translate3d(0, calc(-1 * ${radius}ch), 0)
-                `,
-                transformOrigin: "center center",
-                willChange: "transform",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {char}
-            </span>
-          ))}
-        </div>
-
-        <button
-          onClick={onHireClick}
-          className="absolute inset-0 m-auto bg-white text-black rounded-full w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 flex items-center justify-center shadow-lg hover:bg-transparent hover:text-white hover:border-2 hover:border-white transition-all duration-300 text-xs sm:text-sm md:text-base hire-me-btn"
-          style={{ willChange: "transform" }}
-        >
-          Hire Me
-        </button>
-      </div>
-
       <style>{`
         @keyframes pulse {
           0%,
@@ -227,40 +173,6 @@ const HeroSection = memo(({ heroData }) => {
           }
         }
         
-        @keyframes rotate {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-        
-        @keyframes rotate-reverse {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(-360deg);
-          }
-        }
-        
-        .rotating-circle {
-          animation: ${reverse ? 'rotate-reverse' : 'rotate'} ${duration}s linear infinite !important;
-          transform-origin: center center !important;
-          will-change: transform;
-          backface-visibility: hidden;
-          -webkit-backface-visibility: hidden;
-          -webkit-transform: translateZ(0);
-          transform: translateZ(0);
-        }
-        
-        .rotating-circle span {
-          display: inline-block !important;
-          opacity: 1 !important;
-          visibility: visible !important;
-          pointer-events: none !important;
-        }
         
         /* Responsive background images */
         @media (max-width: 767px) {
@@ -352,19 +264,6 @@ const HeroSection = memo(({ heroData }) => {
           }
         }
         
-        /* Performance optimizations */
-        .hire-me-circle {
-          contain: layout style paint;
-          isolation: isolate;
-        }
-        
-        .hire-me-btn:active {
-          transform: scale(0.95);
-        }
-        
-        .hire-me-btn:hover {
-          transform: scale(1.1);
-        }
         
         /* Larger text for mobile and tablet with proper overflow handling */
         @media (max-width: 1023px) {
@@ -407,46 +306,8 @@ const HeroSection = memo(({ heroData }) => {
           }
         }
         
-        /* Fix rotating circle performance on mobile and tablet */
+        /* Allow vertical scrolling on mobile - only prevent horizontal */
         @media (max-width: 1023px) {
-          .hire-me-circle {
-            position: fixed !important;
-            bottom: 4rem !important;
-            right: 0.75rem !important;
-            top: auto !important;
-            left: auto !important;
-            transform: translateZ(0) !important;
-            -webkit-transform: translateZ(0) !important;
-            backface-visibility: hidden !important;
-            -webkit-backface-visibility: hidden !important;
-            will-change: transform !important;
-            margin: 0 !important;
-            contain: layout style paint !important;
-            isolation: isolate !important;
-            pointer-events: auto !important;
-            touch-action: none !important;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
-          }
-          
-          .rotating-circle {
-            animation: ${reverse ? 'rotate-reverse' : 'rotate'} ${duration}s linear infinite !important;
-            animation-timing-function: linear !important;
-            animation-play-state: running !important;
-            -webkit-animation-play-state: running !important;
-            transform-origin: center center !important;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-          }
-          
-          .rotating-circle span {
-            display: inline-block !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-          }
-          
-          /* Allow vertical scrolling on mobile - only prevent horizontal */
           .hero-bg {
             position: relative !important;
             top: 0 !important;
@@ -485,21 +346,6 @@ const HeroSection = memo(({ heroData }) => {
           .hero-bg {
             position: relative !important;
             touch-action: pan-y !important; /* Allow vertical scroll */
-          }
-          
-          .rotating-circle {
-            animation: ${reverse ? 'rotate-reverse' : 'rotate'} ${duration}s linear infinite !important;
-            animation-timing-function: linear !important;
-            -webkit-animation-timing-function: linear !important;
-            transform-origin: center center !important;
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
-          }
-          
-          .rotating-circle span {
-            display: inline-block !important;
-            opacity: 1 !important;
-            visibility: visible !important;
           }
         }
       `}</style>

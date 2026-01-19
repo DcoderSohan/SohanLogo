@@ -1,9 +1,7 @@
-import { useState, useEffect, lazy, Suspense, useCallback, memo } from "react";
+import { useState, useEffect, lazy, Suspense, memo } from "react";
 import "./App.css";
 import Navbar from "./Components/Navbar/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Preloader from "./Preloader/Preloader";
-import PillarReveal from "./Preloader/PillarReveal";
 import Footer from "./Components/Footer/Footer";
 import ErrorBoundary from "./Components/ErrorBoundary";
 
@@ -23,29 +21,6 @@ const PageLoader = () => (
 
 
 const App = memo(() => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [showPillars, setShowPillars] = useState(false);
-  const [contentAnimated, setContentAnimated] = useState(false);
-
-  const handlePreloaderDone = useCallback(() => {
-    setIsLoading(false);
-    setShowPillars(true);
-  }, []);
-
-  const handlePillarRevealDone = useCallback(() => {
-    setShowPillars(false);
-  }, []);
-
-  // Trigger content animation after pillars start opening
-  useEffect(() => {
-    if (showPillars) {
-      // Wait a bit so pillars start animating, then animate content
-      const timer = setTimeout(() => setContentAnimated(true), 400);
-      return () => clearTimeout(timer);
-    } else {
-      setContentAnimated(false);
-    }
-  }, [showPillars]);
 
   // Fix mobile scrolling issues - ensure scrolling is always enabled (especially Chrome)
   useEffect(() => {
@@ -160,43 +135,22 @@ const App = memo(() => {
   return (
     <ErrorBoundary>
       <div className="bg-[#080808] relative min-h-screen">
-        {isLoading && (
-          <Preloader onDone={handlePreloaderDone} />
-        )}
-        {showPillars && (
-          <PillarReveal onDone={handlePillarRevealDone} />
-        )}
-        {/* Main content always rendered, but animated */}
-        <div
-          className={`transition-all duration-400 ${
-            showPillars
-              ? "pointer-events-none select-none"
-              : ""
-          }`}
-        >
-          <Router>
-            <Navbar className={`transition-all duration-400 ${
-              contentAnimated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
-            }`} />
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <Home
-                      animate={contentAnimated}
-                    />
-                  }
-                />
-                <Route path="/about" element={<Aboutsection />} />
-                <Route path="/projects" element={<Projectssection />} />
-                <Route path="/project/:id" element={<ProjectDetail />} />
-                <Route path="/contact" element={<Contact />} />
-              </Routes>
-            </Suspense>
-            <Footer />
-          </Router>
-        </div>
+        <Router>
+          <Navbar />
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route
+                path="/"
+                element={<Home />}
+              />
+              <Route path="/about" element={<Aboutsection />} />
+              <Route path="/projects" element={<Projectssection />} />
+              <Route path="/project/:id" element={<ProjectDetail />} />
+              <Route path="/contact" element={<Contact />} />
+            </Routes>
+          </Suspense>
+          <Footer />
+        </Router>
       </div>
     </ErrorBoundary>
   );
