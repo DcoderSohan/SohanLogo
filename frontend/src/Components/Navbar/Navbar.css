@@ -1,18 +1,28 @@
-/* Underline animation on each link */
 .hover-link {
-    display: inline-block;
-  }
-  .hover-link::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -3px;
-    width: 0%;
-    height: 2px;
-    background: white;
-    transition: width 0.25s ease-out;
-  }
-  .hover-link:hover::after {
-    width: 50%; /* small underline */
-  }
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+
+/* Use a standard div or pseudo-element that scales */
+.hover-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 50%; /* Your desired width */
+  height: 2px;
+  background: white;
   
+  /* Use transform for better performance on mobile */
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+/* Only trigger hover on devices that support it (prevents "sticky" hovers on mobile) */
+@media (hover: hover) {
+  .hover-link:hover::after {
+    transform: scaleX(1);
+  }
+}
