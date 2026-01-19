@@ -673,6 +673,7 @@ const Contact = memo(() => {
                     </div>
                   </div>
                 </div>
+                </div>
               ) : (
                 <motion.div
                   ref={formRef}
