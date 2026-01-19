@@ -146,25 +146,27 @@ const Navbar = ({ className = "" }) => {
 
   return (
     <>
-      <header className="fixed font-Audiowide top-2 sm:top-4 z-50 w-[calc(100%-1rem)] sm:w-[85%] md:w-[70%] max-w-[calc(100vw-1rem)] left-1/2 -translate-x-1/2 mx-auto rounded-lg p-2 sm:p-3 md:p-4 flex justify-between items-center gap-2 sm:gap-4 backdrop-blur-md bg-black/30 border border-white/10 shadow-lg">
-        <div className="text-2xl text-white flex-shrink-0 min-w-0">
-          <Link to="/">
-            <img
-              src="./mylogo.webp"
-              alt="Logo"
-              width={90}
-              className="w-[70px] sm:w-[100px] md:w-[150px] h-auto max-w-full"
-              loading="eager"
-              decoding="async"
-            />
-          </Link>
+      <header className="fixed font-Audiowide top-2 sm:top-4 z-50 left-1/2 -translate-x-1/2 mx-auto rounded-lg backdrop-blur-md bg-black/30 border border-white/10 shadow-lg" style={{ width: 'calc(100% - 0.5rem)', maxWidth: 'calc(100vw - 0.5rem)', padding: '0.375rem 0.5rem' }}>
+        <div className="flex justify-between items-center gap-1 sm:gap-2 md:gap-4 w-full">
+          <div className="text-2xl text-white flex-shrink-0 min-w-0">
+            <Link to="/" className="block">
+              <img
+                src="./mylogo.webp"
+                alt="Logo"
+                width={90}
+                className="w-[60px] sm:w-[90px] md:w-[150px] h-auto max-w-full"
+                loading="eager"
+                decoding="async"
+              />
+            </Link>
+          </div>
+          <button
+            onClick={toggle}
+            className="text-xs sm:text-sm md:text-lg font-medium text-white hover:opacity-80 transition-opacity px-2 py-1 sm:px-3 sm:py-1 md:px-4 md:py-2 flex-shrink-0 whitespace-nowrap"
+          >
+            Menu
+          </button>
         </div>
-        <button
-          onClick={toggle}
-          className="text-sm sm:text-base md:text-lg font-medium text-white hover:opacity-80 transition-opacity px-2 py-1 sm:px-3 sm:py-1 md:px-4 md:py-2 flex-shrink-0"
-        >
-          Menu
-        </button>
       </header>
 
       <div
