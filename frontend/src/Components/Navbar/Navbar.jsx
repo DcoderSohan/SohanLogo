@@ -23,6 +23,10 @@ const Navbar = ({ className = "" }) => {
     if (opening) {
       document.body.style.overflow = "hidden";
       document.documentElement.style.overflow = "hidden";
+      // Show overlay immediately for animation
+      if (overlay.current) {
+        overlay.current.style.display = "flex";
+      }
     } else {
       document.body.style.overflow = "auto";
       document.documentElement.style.overflow = "auto";
@@ -36,7 +40,7 @@ const Navbar = ({ className = "" }) => {
   useEffect(() => {
     // The SplitText/GSAP setup logic as a function
     const setupSplitText = () => {
-      // Initial overlay animation timeline
+      // Initial overlay animation timeline - smoother animations
       gsap.set(
         [
           overlay.current,
@@ -45,15 +49,46 @@ const Navbar = ({ className = "" }) => {
           logo.current,
           closeBtn.current,
         ],
-        { autoAlpha: 0, y: 20 }
+        { autoAlpha: 0, y: 30 }
       );
+      
+      // Create smooth opening/closing timeline
       tl.current = gsap
         .timeline({ paused: true, reversed: true })
-        .to(overlay.current, { autoAlpha: 1, duration: 0.3 })
-        .to(nav.current, { autoAlpha: 1, y: 0, duration: 0.3 }, "-=0.2")
-        .to(socials.current, { autoAlpha: 1, y: 0, duration: 0.3 }, "-=0.2")
-        .to(logo.current, { autoAlpha: 1, y: 0, duration: 0.3 }, "-=0.2")
-        .to(closeBtn.current, { autoAlpha: 1, y: 0, duration: 0.3 }, "-=0.2");
+        // Fade in overlay background
+        .to(overlay.current, { 
+          autoAlpha: 1, 
+          duration: 0.4,
+          ease: "power2.out"
+        })
+        // Animate close button
+        .to(closeBtn.current, { 
+          autoAlpha: 1, 
+          y: 0,
+          duration: 0.3,
+          ease: "power2.out"
+        }, "-=0.3")
+        // Animate navigation links
+        .to(nav.current, { 
+          autoAlpha: 1, 
+          y: 0,
+          duration: 0.4,
+          ease: "power2.out"
+        }, "-=0.2")
+        // Animate social links
+        .to(socials.current, { 
+          autoAlpha: 1, 
+          y: 0,
+          duration: 0.3,
+          ease: "power2.out"
+        }, "-=0.3")
+        // Animate logo
+        .to(logo.current, { 
+          autoAlpha: 1, 
+          y: 0,
+          duration: 0.3,
+          ease: "power2.out"
+        }, "-=0.3");
 
       // Setup hover animations for each link individually (desktop only)
       linkRefs.current.forEach((linkEl) => {
@@ -153,6 +188,19 @@ const Navbar = ({ className = "" }) => {
     };
   }, []);
 
+  // Handle overlay visibility on close
+  useEffect(() => {
+    if (!isOpen && overlay.current && tl.current) {
+      const hideOverlay = () => {
+        if (overlay.current && tl.current && tl.current.reversed()) {
+          overlay.current.style.display = "none";
+        }
+      };
+      const timer = setTimeout(hideOverlay, 400); // Wait for animation to complete
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   const links = ["Home", "About", "Projects", "Contact"];
   const socialsData = [
     { name: "GitHub", href: "https://github.com/DcoderSohan" },
@@ -161,7 +209,7 @@ const Navbar = ({ className = "" }) => {
 
   return (
     <>
-      {/* Mobile-First Navbar Header */}
+      {/* Navbar Header - Consistent across all devices */}
       <header className="navbar-header">
         <div className="navbar-container">
           <Link to="/" className="navbar-logo">
@@ -183,7 +231,7 @@ const Navbar = ({ className = "" }) => {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Menu Overlay - Consistent across all devices */}
       <div
         ref={overlay}
         className="navbar-overlay"
