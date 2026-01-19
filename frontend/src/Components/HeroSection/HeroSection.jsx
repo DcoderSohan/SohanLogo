@@ -89,9 +89,9 @@ const HeroSection = memo(({ heroData }) => {
       />
       {/* Removed Lightning background */}
 
-      <div className="font-mono h-full gap-6 flex items-center md:items-start justify-start flex-col pl-2 sm:pl-4 md:pl-6 lg:pl-8 xl:pl-12 pr-4 sm:pr-6 md:pr-8 pt-36 sm:pt-36 md:pt-36 relative z-10 w-full max-w-7xl mx-auto overflow-hidden" style={{ position: "relative", zIndex: 10, isolation: "isolate" }}>
+      <div className="font-mono h-full gap-4 sm:gap-6 flex items-center md:items-start justify-center md:justify-start flex-col px-4 sm:px-6 md:pl-6 lg:pl-8 xl:pl-12 md:pr-8 pt-20 sm:pt-24 md:pt-36 pb-20 sm:pb-24 relative z-10 w-full max-w-7xl mx-auto overflow-hidden" style={{ position: "relative", zIndex: 10, isolation: "isolate" }}>
         {/* Blinking name animation */}
-        <div className="name flex justify-center md:justify-start w-full mt-12 sm:mt-16 md:mt-16 md:ml-8 lg:ml-8 xl:ml-8">
+        <div className="name flex justify-center md:justify-start w-full mt-4 sm:mt-8 md:mt-16 md:ml-8 lg:ml-8 xl:ml-8">
           {Array.from(name).map((char, i) => (
             <motion.span
               key={i}
@@ -112,26 +112,27 @@ const HeroSection = memo(({ heroData }) => {
         </div>
 
         {/* Title with animated switching word - CENTERED ON MOBILE/TABLET */}
-        <div className="title font-mono text-white flex flex-col items-center md:items-start justify-center md:justify-start gap-3 sm:gap-4 md:gap-6 lg:gap-8 text-center md:text-left w-full mt-4 sm:mt-6 md:mt-10 md:ml-4 lg:ml-6 xl:ml-8">
+        <div className="title font-mono text-white flex flex-col items-center md:items-start justify-center md:justify-start gap-2 sm:gap-3 md:gap-6 lg:gap-8 text-center md:text-left w-full mt-2 sm:mt-4 md:mt-10 md:ml-4 lg:ml-6 xl:ml-8 px-2 sm:px-4 md:px-0">
           <h1 
             className="leading-none"
             style={{
-              fontSize: "clamp(5rem, 14vw, 8rem)",
+              fontSize: "clamp(3rem, 12vw, 8rem)",
               lineHeight: 1,
+              wordBreak: "break-word",
             }}
           >
             {title}
           </h1>
 
           {/* Fixed width container to prevent horizontal scrolling */}
-          <div className="relative w-full flex justify-center md:justify-start items-center px-4 md:px-0 overflow-visible">
+          <div className="relative w-full flex justify-center md:justify-start items-center px-2 sm:px-4 md:px-0 overflow-hidden">
             <div
               className="relative flex justify-center md:justify-start items-center w-full md:w-auto"
               style={{
                 width: "100%",
-                maxWidth: "clamp(280px, 95vw, 900px)",
-                minHeight: "clamp(60px, 12vw, 140px)",
-                overflow: "visible",
+                maxWidth: "clamp(250px, 90vw, 900px)",
+                minHeight: "clamp(50px, 10vw, 140px)",
+                overflow: "hidden",
               }}
             >
               <AnimatePresence mode="wait" initial={false}>
@@ -144,7 +145,7 @@ const HeroSection = memo(({ heroData }) => {
                   className="absolute inset-0 flex justify-center md:justify-start items-center w-full"
                   style={{ willChange: "opacity" }}
                 >
-                  <div className="flex justify-center md:justify-start items-center w-full overflow-visible px-2 md:px-0">
+                  <div className="flex justify-center md:justify-start items-center w-full overflow-hidden px-1 sm:px-2 md:px-0">
                     {currentWord.split("").map((char, i) => (
                       <motion.span
                         key={`${currentWord}-${char}-${i}`}
@@ -159,7 +160,7 @@ const HeroSection = memo(({ heroData }) => {
                         }}
                         className="inline-block"
                         style={{
-                          fontSize: "clamp(3rem, 10vw, 8rem)",
+                          fontSize: "clamp(2.5rem, 9vw, 8rem)",
                           lineHeight: 1,
                           whiteSpace: "nowrap",
                           willChange: "transform, opacity",
@@ -177,7 +178,7 @@ const HeroSection = memo(({ heroData }) => {
       </div>
 
       {/* Rotating circle with Hire Me button - Fixed outside content container */}
-      <div className="hire-me-circle fixed bottom-20 right-4 sm:bottom-24 sm:right-6 md:absolute md:bottom-8 md:right-8 flex items-center justify-center w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 z-30">
+      <div className="hire-me-circle fixed bottom-16 right-3 sm:bottom-20 sm:right-4 md:absolute md:bottom-8 md:right-8 flex items-center justify-center w-20 h-20 sm:w-28 sm:h-28 md:w-40 md:h-40 lg:w-48 lg:h-48 z-30">
         <div
           className="relative inline-block w-full h-full rotating-circle"
           style={{ 
@@ -359,41 +360,41 @@ const HeroSection = memo(({ heroData }) => {
         /* Larger text for mobile and tablet with proper overflow handling */
         @media (max-width: 1023px) {
           .title h1 {
-            font-size: clamp(3rem, 9vw, 7rem) !important;
+            font-size: clamp(2.5rem, 10vw, 7rem) !important;
           }
           .title .inline-block {
-            font-size: clamp(3rem, 9vw, 7rem) !important;
+            font-size: clamp(2.5rem, 9vw, 7rem) !important;
           }
           .title > div > div {
             width: 100% !important;
             max-width: 100% !important;
-            overflow: visible !important;
+            overflow: hidden !important;
             padding: 0 0.5rem !important;
           }
           .title > div > div > div {
-            width: auto !important;
+            width: 100% !important;
             max-width: 100% !important;
-            overflow: visible !important;
+            overflow: hidden !important;
           }
         }
         
         @media (max-width: 767px) {
           .title h1 {
-            font-size: clamp(2.5rem, 8vw, 6rem) !important;
+            font-size: clamp(2rem, 9vw, 5rem) !important;
           }
           .title .inline-block {
-            font-size: clamp(2.5rem, 8vw, 6rem) !important;
+            font-size: clamp(2rem, 8vw, 5rem) !important;
           }
           .title > div > div {
             width: 100% !important;
             max-width: 100% !important;
-            overflow: visible !important;
-            padding: 0 0.75rem !important;
+            overflow: hidden !important;
+            padding: 0 0.5rem !important;
           }
           .title > div > div > div {
-            width: auto !important;
+            width: 100% !important;
             max-width: 100% !important;
-            overflow: visible !important;
+            overflow: hidden !important;
           }
         }
         
@@ -401,8 +402,8 @@ const HeroSection = memo(({ heroData }) => {
         @media (max-width: 1023px) {
           .hire-me-circle {
             position: fixed !important;
-            bottom: 5rem !important;
-            right: 1rem !important;
+            bottom: 4rem !important;
+            right: 0.75rem !important;
             top: auto !important;
             left: auto !important;
             transform: translateZ(0) !important;

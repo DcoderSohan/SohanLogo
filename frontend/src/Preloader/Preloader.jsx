@@ -23,13 +23,16 @@ const Preloader = ({ onDone }) => {
         display: "flex",
         alignItems: "flex-end",
         justifyContent: "flex-end",
+        overflow: "hidden",
       }}
     >
       <span
         style={{
-          fontSize: "9rem",
+          fontSize: "clamp(3rem, 15vw, 9rem)",
           color: "#fff",
-          margin: "2rem",
+          margin: "clamp(1rem, 3vw, 2rem)",
+          lineHeight: 1,
+          wordBreak: "keep-all",
         }}
         className='font-Tourney'
       >
