@@ -23,7 +23,10 @@ const PillarReveal = ({ onDone }) => {
         zIndex: 9998,
         display: "flex",
         width: "100vw",
+        maxWidth: "100vw",
         height: "100vh",
+        maxHeight: "100vh",
+        overflow: "hidden",
         pointerEvents: "none",
       }}
       className="font-Tourney"

@@ -146,14 +146,14 @@ const Navbar = ({ className = "" }) => {
 
   return (
     <>
-      <header className="fixed font-Audiowide top-2 sm:top-4 z-50 w-[95%] sm:w-[85%] md:w-[70%] left-1/2 -translate-x-1/2 mx-auto rounded-lg p-2 sm:p-3 md:p-4 flex justify-between items-center gap-2 sm:gap-4 backdrop-blur-md bg-black/30 border border-white/10 shadow-lg">
-        <div className="text-2xl text-white flex-shrink-0">
+      <header className="fixed font-Audiowide top-2 sm:top-4 z-50 w-[calc(100%-1rem)] sm:w-[85%] md:w-[70%] max-w-[calc(100vw-1rem)] left-1/2 -translate-x-1/2 mx-auto rounded-lg p-2 sm:p-3 md:p-4 flex justify-between items-center gap-2 sm:gap-4 backdrop-blur-md bg-black/30 border border-white/10 shadow-lg">
+        <div className="text-2xl text-white flex-shrink-0 min-w-0">
           <Link to="/">
             <img
               src="./mylogo.webp"
               alt="Logo"
               width={90}
-              className="w-[90px] sm:w-[120px] md:w-[150px] h-auto"
+              className="w-[70px] sm:w-[100px] md:w-[150px] h-auto max-w-full"
               loading="eager"
               decoding="async"
             />
@@ -161,7 +161,7 @@ const Navbar = ({ className = "" }) => {
         </div>
         <button
           onClick={toggle}
-          className="text-base sm:text-lg font-medium text-white hover:opacity-80 transition-opacity px-3 py-1 sm:px-4 sm:py-2"
+          className="text-sm sm:text-base md:text-lg font-medium text-white hover:opacity-80 transition-opacity px-2 py-1 sm:px-3 sm:py-1 md:px-4 md:py-2 flex-shrink-0"
         >
           Menu
         </button>

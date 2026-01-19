@@ -89,9 +89,9 @@ const HeroSection = memo(({ heroData }) => {
       />
       {/* Removed Lightning background */}
 
-      <div className="font-mono h-full gap-4 sm:gap-6 flex items-center md:items-start justify-center md:justify-start flex-col px-4 sm:px-6 md:pl-6 lg:pl-8 xl:pl-12 md:pr-8 pt-20 sm:pt-24 md:pt-36 pb-20 sm:pb-24 relative z-10 w-full max-w-7xl mx-auto overflow-hidden" style={{ position: "relative", zIndex: 10, isolation: "isolate" }}>
+      <div className="font-mono h-full gap-4 sm:gap-6 flex items-center md:items-start justify-center md:justify-start flex-col px-4 sm:px-6 md:pl-6 lg:pl-8 xl:pl-12 md:pr-8 pt-28 sm:pt-32 md:pt-36 pb-20 sm:pb-24 relative z-10 w-full max-w-7xl mx-auto overflow-hidden" style={{ position: "relative", zIndex: 10, isolation: "isolate" }}>
         {/* Blinking name animation */}
-        <div className="name flex justify-center md:justify-start w-full mt-4 sm:mt-8 md:mt-16 md:ml-8 lg:ml-8 xl:ml-8">
+        <div className="name flex justify-center md:justify-start w-full mt-6 sm:mt-8 md:mt-16 md:ml-8 lg:ml-8 xl:ml-8">
           {Array.from(name).map((char, i) => (
             <motion.span
               key={i}
@@ -112,7 +112,7 @@ const HeroSection = memo(({ heroData }) => {
         </div>
 
         {/* Title with animated switching word - CENTERED ON MOBILE/TABLET */}
-        <div className="title font-mono text-white flex flex-col items-center md:items-start justify-center md:justify-start gap-2 sm:gap-3 md:gap-6 lg:gap-8 text-center md:text-left w-full mt-2 sm:mt-4 md:mt-10 md:ml-4 lg:ml-6 xl:ml-8 px-2 sm:px-4 md:px-0">
+        <div className="title font-mono text-white flex flex-col items-center md:items-start justify-center md:justify-start gap-2 sm:gap-3 md:gap-6 lg:gap-8 text-center md:text-left w-full mt-4 sm:mt-6 md:mt-10 md:ml-4 lg:ml-6 xl:ml-8 px-2 sm:px-4 md:px-0">
           <h1 
             className="leading-none"
             style={{
@@ -190,7 +190,7 @@ const HeroSection = memo(({ heroData }) => {
           {letters.map((char, i) => (
             <span
               key={i}
-              className="absolute left-1/2 top-1/2 text-white text-xs sm:text-sm md:text-base"
+              className="absolute left-1/2 top-1/2 text-white font-bold text-[10px] sm:text-xs md:text-sm"
               style={{
                 transform: `
                   translate3d(-50%, -50%, 0)
@@ -199,6 +199,7 @@ const HeroSection = memo(({ heroData }) => {
                 `,
                 transformOrigin: "center center",
                 willChange: "transform",
+                whiteSpace: "nowrap",
               }}
             >
               {char}
@@ -251,6 +252,14 @@ const HeroSection = memo(({ heroData }) => {
           backface-visibility: hidden;
           -webkit-backface-visibility: hidden;
           -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+        }
+        
+        .rotating-circle span {
+          display: inline-block !important;
+          opacity: 1 !important;
+          visibility: visible !important;
+          pointer-events: none !important;
         }
         
         /* Responsive background images */
@@ -428,6 +437,13 @@ const HeroSection = memo(({ heroData }) => {
             -webkit-animation-play-state: running !important;
             transform-origin: center center !important;
             -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+          }
+          
+          .rotating-circle span {
+            display: inline-block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
           }
           
           /* Allow vertical scrolling on mobile - only prevent horizontal */
@@ -476,6 +492,14 @@ const HeroSection = memo(({ heroData }) => {
             animation-timing-function: linear !important;
             -webkit-animation-timing-function: linear !important;
             transform-origin: center center !important;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+          }
+          
+          .rotating-circle span {
+            display: inline-block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
           }
         }
       `}</style>
