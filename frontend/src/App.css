@@ -1,2 +1,29 @@
-/* App.css - Empty file to prevent import errors */
+/* App.css - Prevent footer flash on page load */
+#root {
+  overflow-x: hidden;
+}
+
+/* Prevent footer from flashing on initial load */
+footer {
+  opacity: 0;
+  animation: fadeInFooter 0.3s ease-in 0.2s forwards;
+}
+
+@keyframes fadeInFooter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Ensure page starts at top */
+html, body {
+  scroll-behavior: auto;
+}
+
+html {
+  scroll-padding-top: 0;
+}
 

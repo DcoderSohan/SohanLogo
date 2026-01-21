@@ -15,191 +15,131 @@ const Navbar = ({ className = "" }) => {
   const tl = useRef();
   const linkRefs = useRef([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const toggle = () => {
-    const opening = !isOpen;
-    setIsOpen(opening);
+    if (isAnimating) return; // Block clicks while animating
     
-    if (opening) {
+    setIsAnimating(true);
+
+    if (!isOpen) {
+      // Opening
+      setIsOpen(true);
+      if (overlay.current) overlay.current.style.display = "flex";
       document.body.style.overflow = "hidden";
       document.documentElement.style.overflow = "hidden";
-      // Show overlay immediately for animation
-      if (overlay.current) {
-        overlay.current.style.display = "flex";
-      }
+      if (tl.current) tl.current.play();
     } else {
-      document.body.style.overflow = "auto";
-      document.documentElement.style.overflow = "auto";
-    }
-    
-    if (tl.current) {
-      opening ? tl.current.play() : tl.current.reverse();
+      // Closing
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      if (tl.current) tl.current.reverse();
     }
   };
 
+  // Scroll detection
   useEffect(() => {
-    // The SplitText/GSAP setup logic as a function
-    const setupSplitText = () => {
-      // Initial overlay animation timeline - smoother animations
-      gsap.set(
-        [
-          overlay.current,
-          nav.current,
-          socials.current,
-          logo.current,
-          closeBtn.current,
-        ],
-        { autoAlpha: 0, y: 30 }
-      );
-      
-      // Create smooth opening/closing timeline
-      tl.current = gsap
-        .timeline({ paused: true, reversed: true })
-        // Fade in overlay background
-        .to(overlay.current, { 
-          autoAlpha: 1, 
-          duration: 0.4,
-          ease: "power2.out"
-        })
-        // Animate close button
-        .to(closeBtn.current, { 
-          autoAlpha: 1, 
-          y: 0,
-          duration: 0.3,
-          ease: "power2.out"
-        }, "-=0.3")
-        // Animate navigation links
-        .to(nav.current, { 
-          autoAlpha: 1, 
-          y: 0,
-          duration: 0.4,
-          ease: "power2.out"
-        }, "-=0.2")
-        // Animate social links
-        .to(socials.current, { 
-          autoAlpha: 1, 
-          y: 0,
-          duration: 0.3,
-          ease: "power2.out"
-        }, "-=0.3")
-        // Animate logo
-        .to(logo.current, { 
-          autoAlpha: 1, 
-          y: 0,
-          duration: 0.3,
-          ease: "power2.out"
-        }, "-=0.3");
+    const handleScroll = () => setHasScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // set initial state
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-      // Setup hover animations for each link individually (desktop only)
-      linkRefs.current.forEach((linkEl) => {
-        if (linkEl) {
-          const split = new SplitText(linkEl, { type: "chars" });
-          const chars = split.chars;
-
-          // Create underline element
-          const underline = document.createElement("div");
-          underline.style.cssText = `
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 30%;
-            height: 1px;
-            background-color: white;
-            transform: scaleX(0);
-            transform-origin: left;
-          `;
-          linkEl.appendChild(underline);
-
-          // Store original text for cleanup
-          linkEl._splitText = split;
-          linkEl._underline = underline;
-          linkEl._originalText = linkEl.textContent;
-
-          // Set up hover animations - text always visible, just animates on hover
-          const hoverIn = () => {
-            // Only on desktop (hover capable devices)
-            if (window.matchMedia("(hover: hover)").matches) {
-              gsap.fromTo(
-                chars,
-                { y: 20, autoAlpha: 0 },
-                {
-                  y: 0,
-                  autoAlpha: 1,
-                  stagger: 0.03,
-                  ease: "power2.out",
-                  duration: 0.4,
-                }
-              );
-              // Animate underline in and then out automatically
-              gsap
-                .timeline()
-                .to(underline, {
-                  scaleX: 1,
-                  duration: 0.4,
-                  ease: "power2.out",
-                  delay: 0.2,
-                })
-                .to(underline, {
-                  scaleX: 0,
-                  duration: 0.3,
-                  ease: "power2.in",
-                  delay: 0.1,
-                });
-            }
-          };
-
-          const hoverOut = () => {
-            // Kill any ongoing underline animations and reset
-            gsap.killTweensOf(underline);
-            gsap.set(underline, { scaleX: 0 });
-          };
-
-          linkEl.addEventListener("mouseenter", hoverIn);
-          linkEl.addEventListener("mouseleave", hoverOut);
-
-          // Store event listeners for cleanup
-          linkEl._hoverIn = hoverIn;
-          linkEl._hoverOut = hoverOut;
-        }
+  // Initialize Timeline once
+  useEffect(() => {
+    // Set initial hidden states
+    if (overlay.current) {
+      gsap.set(overlay.current, { autoAlpha: 0 });
+    }
+    if (nav.current && socials.current && logo.current && closeBtn.current) {
+      gsap.set([nav.current, socials.current, logo.current, closeBtn.current], { 
+        autoAlpha: 0, 
+        y: 30 
       });
-    };
-
-    // Wait for fonts to be loaded before running SplitText
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(setupSplitText);
-    } else {
-      // Fallback for older browsers
-      window.addEventListener("load", setupSplitText);
-      return () => window.removeEventListener("load", setupSplitText);
     }
 
-    // Cleanup function
+    tl.current = gsap.timeline({
+      paused: true,
+      onComplete: () => setIsAnimating(false),
+      onReverseComplete: () => {
+        if (overlay.current) overlay.current.style.display = "none";
+        setIsAnimating(false);
+        setIsOpen(false);
+      }
+    });
+
+    tl.current
+      .to(overlay.current, { 
+        autoAlpha: 1, 
+        duration: 0.4, 
+        ease: "power2.inOut" 
+      })
+      .to([closeBtn.current, nav.current, socials.current, logo.current], {
+        autoAlpha: 1,
+        y: 0,
+        stagger: 0.08,
+        duration: 0.5,
+        ease: "power3.out"
+      }, "-=0.2");
+
     return () => {
-      linkRefs.current.forEach((linkEl) => {
-        if (linkEl && linkEl._splitText) {
-          linkEl.removeEventListener("mouseenter", linkEl._hoverIn);
-          linkEl.removeEventListener("mouseleave", linkEl._hoverOut);
-          if (linkEl._underline) {
-            linkEl.removeChild(linkEl._underline);
-          }
-          linkEl._splitText.revert();
-        }
-      });
+      if (tl.current) tl.current.kill();
     };
   }, []);
 
-  // Handle overlay visibility on close
+  // SplitText & Underline Logic (Desktop only - no mobile touch)
   useEffect(() => {
-    if (!isOpen && overlay.current && tl.current) {
-      const hideOverlay = () => {
-        if (overlay.current && tl.current && tl.current.reversed()) {
-          overlay.current.style.display = "none";
+    const ctx = gsap.context(() => {
+      linkRefs.current.forEach((linkEl) => {
+        if (!linkEl) return;
+        
+        // Remove existing underline if any (cleanup)
+        const existing = linkEl.querySelector(".navbar-link-underline");
+        if (existing) existing.remove();
+
+        try {
+          const split = new SplitText(linkEl, { type: "chars" });
+          const underline = document.createElement("div");
+          underline.className = "navbar-link-underline";
+          underline.style.cssText = `
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: white;
+            transform: scaleX(0);
+            transform-origin: left;
+            opacity: 0;
+            pointer-events: none;
+          `;
+          linkEl.appendChild(underline);
+
+          const hoverIn = () => {
+            gsap.to(split.chars, { y: -5, stagger: 0.02, duration: 0.3 });
+            gsap.to(underline, { scaleX: 1, opacity: 1, duration: 0.3 });
+          };
+
+          const hoverOut = () => {
+            gsap.to(split.chars, { y: 0, stagger: 0.02, duration: 0.3 });
+            gsap.to(underline, { scaleX: 0, opacity: 0, duration: 0.3 });
+          };
+
+          // Only add hover listeners (no touch for mobile - underline disabled on mobile)
+          linkEl.addEventListener("mouseenter", hoverIn);
+          linkEl.addEventListener("mouseleave", hoverOut);
+        } catch (error) {
+          console.warn('Animation setup failed:', error);
         }
-      };
-      const timer = setTimeout(hideOverlay, 400); // Wait for animation to complete
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
+      });
+    });
+
+    return () => ctx.revert();
+  }, [isOpen]); // Re-init splittext when menu opens to ensure correct measuring
+
+  // Handle overlay visibility on close - now handled in toggle function
+  // This useEffect is kept for edge cases but main logic is in toggle()
 
   const links = ["Home", "About", "Projects", "Contact"];
   const socialsData = [
@@ -211,7 +151,7 @@ const Navbar = ({ className = "" }) => {
     <>
       {/* Navbar Header - Consistent across all devices */}
       <header className="navbar-header">
-        <div className="navbar-container">
+        <div className={`navbar-container ${hasScrolled ? "navbar-container--glass" : ""}`}>
           <Link to="/" className="navbar-logo">
             <img
               src="./mylogo.webp"
@@ -236,7 +176,7 @@ const Navbar = ({ className = "" }) => {
         ref={overlay}
         className="navbar-overlay"
         style={{
-          display: isOpen ? 'flex' : 'none',
+          display: 'none', // Controlled by JS/GSAP
         }}
       >
         <button

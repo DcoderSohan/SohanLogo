@@ -6,6 +6,7 @@ import Gitgraph from "../Components/GitGraph/Gitgraph";
 import Project from "../Components/Projects/Project";
 import Contact from "../Components/Contact/Contact";
 import Quote from "../Components/Quote/Quote";
+import HeroSection from "../Components/HeroSection/HeroSection";
 import { homeAPI, projectsAPI } from "../utils/api";
 
 // Helper function to check if URL is a blob URL
@@ -70,9 +71,11 @@ const Home = memo(() => {
   const gitUserName = useMemo(() => homeData?.gitgraph?.userName ?? "DcoderSohan", [homeData?.gitgraph?.userName]);
   const quotes = useMemo(() => homeData?.quotes || [], [homeData?.quotes]);
   const skillsData = useMemo(() => homeData?.skills, [homeData?.skills]);
+  const heroData = useMemo(() => homeData?.hero || homeData, [homeData]);
 
   return (
     <div>
+      <HeroSection heroData={heroData} />
       <div className="-mt-8">
         <Quote quotes={quotes} />
       </div>
